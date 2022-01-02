@@ -88,7 +88,7 @@ public class PassMan extends JFrame{
 		panel1.add(group2);
 		
 	}
-	
+	//
 	//Adding Passwords Panel
 	public void panel2Set() {
 		
