@@ -33,7 +33,7 @@ public class PassMan extends JFrame{
 	private JButton reveal;
 	private JFileChooser filer;
 	private static String filename = "default.dat";
-	private File mainFile;
+	//private File mainFile;
 	private static HashMap<String, String> KeyMap;
 	private static ArrayList <String> usernames = new ArrayList<>();
 	private static ArrayList <String> passwords = new ArrayList<>();
@@ -43,7 +43,7 @@ public class PassMan extends JFrame{
 	public PassMan() {
 		
 		this.setTitle("Pass Man");
-		this.setSize(850,600);
+		this.setSize(780,400);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLayout(new BorderLayout());
 		panel1Set();
@@ -52,9 +52,10 @@ public class PassMan extends JFrame{
 		this.add(panel1, BorderLayout.WEST);
 		this.add(panel2, BorderLayout.CENTER);
 		this.add(panel3, BorderLayout.EAST);
-		this.pack();
+		//this.pack();
 		this.setResizable(true);
-		this.setVisible(true);		
+		this.setVisible(true);
+		
 	}
 	
     ///////////////////////////////////////////////////////////////////////
@@ -71,7 +72,7 @@ public class PassMan extends JFrame{
 		menu1.add(item);
 		
 	}
-	
+
 	//Groups panel.
 	public void panel1Set() {
 		
@@ -88,7 +89,7 @@ public class PassMan extends JFrame{
 		panel1.add(group2);
 		
 	}
-	//
+	
 	//Adding Passwords Panel
 	public void panel2Set() {
 		
@@ -109,9 +110,13 @@ public class PassMan extends JFrame{
 	
 	//View and decrypt panel
 	public void panel3Set(){
+		
 	
 		panel3 = new JPanel();
 		panel3.setLayout(new FlowLayout());
+		
+		//JLabel label = new JLabel();
+		//label.setText("Username and Password");
 		
 		reveal = new JButton("Reveal");
 		
@@ -122,12 +127,12 @@ public class PassMan extends JFrame{
 		reveal_user = new JTextField(12);
 		
 		reveal_pass = new JTextField(12);
-		
 		panel3.add(reveal);
 		panel3.add(list);
 		panel3.add(pane);
 		panel3.add(reveal_user);
 		panel3.add(reveal_pass);
+		//panel3.add(label, BorderLayout.CENTER);
 		
 	
 }
@@ -162,6 +167,13 @@ public class PassMan extends JFrame{
 		stream.fileStart("Default Value");
 		PrintWriter UsernameFile = new PrintWriter("usernames.txt");
 		PrintWriter PasswordFile = new PrintWriter("passwords.txt");
+		String key = JOptionPane.showInputDialog("Please create an encryption key (256 AES) to proceed");
+		ADV_IO keyStore = new ADV_IO();
+		try {
+			keyStore.fileOpenBin("default.dat", returner(key));
+		} catch (NoSuchAlgorithmException | IOException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage(),"No Such Algorithm",JOptionPane.OK_OPTION);
+		}
 		UsernameFile.close();
 		PasswordFile.close();
 		
@@ -170,17 +182,17 @@ public class PassMan extends JFrame{
 	
 
     //not in use now.
-    public void load_elements() throws FileNotFoundException {
+    //public void load_elements() throws FileNotFoundException {
     	
-    	DataInputStream stream = new DataInputStream(new FileInputStream(filename));
-    	Scanner input = new Scanner(stream);
-    	while(input.hasNextByte()){
+    	//DataInputStream stream = new DataInputStream(new FileInputStream(filename));
+    	//Scanner input = new Scanner(stream);
+    	//while(input.hasNextByte()){
     		
     		
-    	}
+    	//}
   
     	
-    }
+    //}
     
     //Initializing the data structures, this method is called second. #2
     public static void load_txt_elements() throws FileNotFoundException{
@@ -238,7 +250,7 @@ public class PassMan extends JFrame{
     //
     ///////////////////////////////////////////////////////////////////////
     	
-    public SecretKeySpec returner(String key)throws NoSuchAlgorithmException{
+    public static SecretKeySpec returner(String key)throws NoSuchAlgorithmException{
 
         SecretKeySpec keyspec;
         keyspec = new SecretKeySpec(key.getBytes(), "AES");
