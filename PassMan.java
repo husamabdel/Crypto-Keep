@@ -101,6 +101,7 @@ public class PassMan extends JFrame{
 		textPass = new JTextField(12);
 		
 		add = new JButton("Add");
+		add.addActionListener(new ADD_AND_ENCRYPT());
 		
 		panel2.add(add);
 		panel2.add(textUser);
@@ -123,12 +124,11 @@ public class PassMan extends JFrame{
     	list = new JList(load_list());
     	pane = new JScrollPane(list, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		list.setVisibleRowCount(6);
-		
 		reveal_user = new JTextField(12);
 		
 		reveal_pass = new JTextField(12);
 		panel3.add(reveal);
-		panel3.add(list);
+		//panel3.add(list);
 		panel3.add(pane);
 		panel3.add(reveal_user);
 		panel3.add(reveal_pass);
@@ -162,16 +162,15 @@ public class PassMan extends JFrame{
 		
 		JOptionPane.showMessageDialog(null,"Welcome to Pass Man Pro, the setup process will now begin","Setup.exe",JOptionPane.OK_OPTION);
 		JOptionPane.showMessageDialog(null,"A new file has been created!","FileNotFound",JOptionPane.OK_OPTION);
-		ADV_IO stream = new ADV_IO();
-		stream.filStartBin("Default vaulue");
-		stream.fileStart("Default Value");
+
 		PrintWriter UsernameFile = new PrintWriter("usernames.txt");
 		PrintWriter PasswordFile = new PrintWriter("passwords.txt");
 		String key = JOptionPane.showInputDialog("Please create an encryption key (256 AES) to proceed");
 		ADV_IO keyStore = new ADV_IO();
 		try {
-			keyStore.fileOpenBin("default.dat", returner(key));
-		} catch (NoSuchAlgorithmException | IOException e) {
+			keyStore.filStartBin(key);
+			keyStore.fileStart(key);
+		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null, e.getMessage(),"No Such Algorithm",JOptionPane.OK_OPTION);
 		}
 		UsernameFile.close();
@@ -250,6 +249,8 @@ public class PassMan extends JFrame{
     //
     ///////////////////////////////////////////////////////////////////////
     	
+    
+    
     public static SecretKeySpec returner(String key)throws NoSuchAlgorithmException{
 
         SecretKeySpec keyspec;
@@ -261,7 +262,7 @@ public class PassMan extends JFrame{
     public byte[] encrypt(String TEXT, String key)throws Exception{
         
         Cipher cipher = Cipher.getInstance("AES");
-        SecretKeySpec spec = returner(key);
+        SecretKeySpec spec = returner(getKey());
         byte[] enc = TEXT.getBytes();
         cipher.init(Cipher.ENCRYPT_MODE, spec);
         byte[] after = cipher.doFinal(enc);
@@ -269,6 +270,84 @@ public class PassMan extends JFrame{
         return after;
     
     }
+    //// GET BACK HEREE
+    public String getKey() throws FileNotFoundException, NoSuchAlgorithmException {
+    	
+    	File file = new File("default.txt");
+    	Scanner fileStream = new Scanner(file);
+    	
+    	while(fileStream.hasNextLine()) {
+    	String spec = fileStream.nextLine();
+    	if(!fileStream.hasNextLine()) {
+    		
+        	return spec;
+    		
+    		}
+    	}
+    	return null;
+    
+    }
+    
+    
+    public byte[] decrypt(String TEXT, String key)throws Exception{
+        
+        Cipher cipher = Cipher.getInstance("AES");
+        SecretKeySpec spec = returner(getKey());
+        byte[] dec = TEXT.getBytes();
+        cipher.init(Cipher.DECRYPT_MODE, spec);
+        byte[] after = cipher.doFinal(dec);
+        
+        return after;
+    
+    }
+    
+    
+    
+    ////////////////////////////////////////////
+    //
+    //		## Action Listeners::
+    //
+    ////////////////////////////////////////////
+    
+ 
+    
+    // Action listener for add button (Panel 2)
+    private class ADD_AND_ENCRYPT implements ActionListener{
+    	
+    	public void actionPerformed(ActionEvent e) {
+    		
+    		String uname = textUser.getText();
+    		String pwd = textPass.getText();
+    		
+    		try {
+				byte[] encryptedUser = encrypt(uname, getKey());
+				byte[] encryptedPass = encrypt(pwd, getKey());
+				
+				String getuBytes = new String(encryptedUser);
+				String getpBytes = new String(encryptedPass);
+				 ADV_IO io = new ADV_IO();
+				 io.fileOpen("usernames.txt", getuBytes);
+				 io.fileOpen("passwords.txt", getpBytes);
+				 usernames.add(uname);
+				 passwords.add(pwd);
+				KeyMap.put(uname, pwd);
+				
+				
+			} 
+    		
+    		catch (Exception e1) {
+				
+				e1.printStackTrace();
+			
+			}
+    		
+    		textUser.setText(null);
+    		textPass.setText(null);
+    		
+    	}
+    	
+    }
+  
   
     
     
@@ -310,12 +389,4 @@ public class PassMan extends JFrame{
     }
 	
 }
-
-
-
-
-
-
-
-
 
