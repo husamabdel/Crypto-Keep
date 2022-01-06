@@ -37,6 +37,7 @@ public class PassMan extends JFrame{
 	private static HashMap<String, String> KeyMap;
 	private static ArrayList <String> usernames = new ArrayList<>();
 	private static ArrayList <String> passwords = new ArrayList<>();
+	private static ArrayList <String> uname = new ArrayList<>();
 	
 
 
@@ -120,13 +121,15 @@ public class PassMan extends JFrame{
 		//label.setText("Username and Password");
 		
 		reveal = new JButton("Reveal");
+		reveal.addActionListener(new DECRYPT_USER_PASS());
 		
     	list = new JList(load_list());
     	pane = new JScrollPane(list, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		list.setVisibleRowCount(6);
 		reveal_user = new JTextField(12);
-		
+		//reveal_user.setEditable(false);
 		reveal_pass = new JTextField(12);
+		//reveal_pass.setEditable(false);
 		panel3.add(reveal);
 		//panel3.add(list);
 		panel3.add(pane);
@@ -164,6 +167,7 @@ public class PassMan extends JFrame{
 		JOptionPane.showMessageDialog(null,"A new file has been created!","FileNotFound",JOptionPane.OK_OPTION);
 
 		PrintWriter UsernameFile = new PrintWriter("usernames.txt");
+		PrintWriter decrypted_unames = new PrintWriter("uname_list.txt");
 		PrintWriter PasswordFile = new PrintWriter("passwords.txt");
 		String key = JOptionPane.showInputDialog("Please create an encryption key (256 AES) to proceed");
 		ADV_IO keyStore = new ADV_IO();
@@ -175,6 +179,7 @@ public class PassMan extends JFrame{
 		}
 		UsernameFile.close();
 		PasswordFile.close();
+		decrypted_unames.close();
 		
 	}
 	
@@ -207,18 +212,40 @@ public class PassMan extends JFrame{
 				e.printStackTrace();
 			}
     	}
-    	Input.close();
+    	
+    	File reader = new File("uname_list.txt");
+    	Scanner Inputer = new Scanner(reader);
+    	while(Inputer.hasNextLine()) {
+    		try {
+				uname.add(Inputer.nextLine());
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    	}
+    	
+    	
     	//Load Password File...
     	File pass = new File("passwords.txt");
     	Scanner passIn = new Scanner(pass);
     	while(passIn.hasNextLine()) {
     		passwords.add(passIn.nextLine());
     	}
-    	passIn.close();
     	//Add HashMap Data Structure.
     	
+    	while(Inputer.hasNextLine() && passIn.hasNextLine()) {
+    		
+    		KeyMap.put(Inputer.nextLine(), passIn.nextLine());
+    		
+    	}
     	
-    	//for(int x = 0; x < passwords.size() && x < usernames.size(); x++){
+    	Inputer.close();
+    	Input.close();
+    	passIn.close();
+
+
+    	
+    	//for(int x = 0; x < passwords.size()-1 && x < usernames.size()-1; x++){
     		
     		//KeyMap.put(usernames.get(x), passwords.get(x));
     		
@@ -230,10 +257,10 @@ public class PassMan extends JFrame{
     
     public static String[] load_list(){
     	
-    	String[] unames = new String[usernames.size()];
-    	for(int x = 0; x < usernames.size(); x++) {
+    	String[] unames = new String[uname.size()];
+    	for(int x = 0; x < uname.size(); x++) {
     		
-    		unames[x] = usernames.get(x);
+    		unames[x] = uname.get(x);
     		
     	}
     		return unames;
@@ -326,14 +353,15 @@ public class PassMan extends JFrame{
 				String getuBytes = new String(encryptedUser);
 				String getpBytes = new String(encryptedPass);
 				 ADV_IO io = new ADV_IO();
+				 io.fileOpen("uname_list.txt", uname);
 				 io.fileOpen("usernames.txt", getuBytes);
 				 io.fileOpen("passwords.txt", getpBytes);
 				 usernames.add(uname);
 				 passwords.add(pwd);
-				KeyMap.put(uname, pwd);
+				//KeyMap.put(uname, pwd);
 				
 				
-			} 
+			}
     		
     		catch (Exception e1) {
 				
@@ -345,6 +373,32 @@ public class PassMan extends JFrame{
     		textPass.setText(null);
     		
     	}
+    	
+    }
+    
+    //Action Listener for the reveal button
+    
+    private class DECRYPT_USER_PASS implements ActionListener{
+    	
+    	@Override
+    	public void actionPerformed(ActionEvent e) {
+    	
+    		int y = 0;
+    		String selectedVauled = (String) list.getSelectedValue();
+    		
+    		for(String x: usernames) {
+    			
+    			String temp = uname.get(y);
+    			
+    			if(x.equals(temp)) {
+    				reveal_user.setText(x);
+    				reveal_pass.setText(KeyMap.get(x));
+    			}
+    			y++;
+    		}
+    		
+    	}
+    	
     	
     }
   
