@@ -112,7 +112,7 @@ public class PassMan extends JFrame{
 		panel3.setLayout(new FlowLayout());
 		
 		textUser = new JTextField(12);
-		textPass.setText("username here");
+		textUser.setText("username here");
 		textPass = new JTextField(12);
 		textPass.setText("password here");
 		add = new JButton("Add");
