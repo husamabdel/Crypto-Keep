@@ -30,21 +30,21 @@ public class ADV_IO {
 		
 	}
 
-	public void fileStart(String data)throws IOException{
+	public void fileStart(String data, String filename)throws IOException{
 		
 		this.data = data;
 		
-		PrintWriter Outputfile = new PrintWriter("default.txt");
+		PrintWriter Outputfile = new PrintWriter(filename);
 		Outputfile.println(data);
 		Outputfile.close();
 		
 	}
 	
-	public void filStartBin(String data) throws IOException {
+	public void filStartBin(String data, String filename) throws IOException {
 		
 		this.data = data;
 		
-		DataOutputStream stream = new DataOutputStream(new FileOutputStream("default.dat"));
+		DataOutputStream stream = new DataOutputStream(new FileOutputStream(filename));
 		stream.writeUTF(data);
 		stream.close();
 		
