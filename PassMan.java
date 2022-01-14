@@ -179,8 +179,8 @@ public class PassMan extends JFrame{
 			crypto cKey = new crypto();
 			byte[] bytekey = cKey.keyGen().getEncoded();
 			String format = new String(bytekey);
-			keyStore.fileStart("def.txt",format);
-			keyStore.filStartBin("def.dat", format);
+			keyStore.fileStart(format,"def.txt");
+			keyStore.filStartBin(format, "def.dat");
 		
 		
 		UsernameFile.close();
@@ -432,28 +432,27 @@ public class PassMan extends JFrame{
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();
 			}
-    		int y = 0;
     		String selectedVauled = (String) list.getSelectedValue();
     		
-    		for(String x: usernames) {
+    		for(int x = 0; x < uname.size(); x++) {
     			
-    			String temp = uname.get(y);
     			
-    			if(selectedVauled.equals(temp)) {
+    			if(selectedVauled.equals(uname.get(x))) {
     				
 					try {
-						String dPass = new String(new crypto().decrypt(passwords.get(y), load_key(), "def.txt"));
-						reveal_user.setText(x);
+						
+						String dPass = new String(new crypto().decrypt(passwords.get(x), load_key(), "def.txt"));
+						reveal_user.setText(selectedVauled);
 						reveal_pass.setText(dPass);
 					
 					} 
-					
 					catch (Exception e1) {
 						e1.printStackTrace();
 					}
     			
+
+
 				}
-    			y++;
     		}
     		
     	}
