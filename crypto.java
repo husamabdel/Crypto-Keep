@@ -29,7 +29,9 @@ public class crypto {
     public SecretKey keyGen(){
 
         try {
+            
             SecretKey gen = KeyGenerator.getInstance("AES").generateKey();
+
             return gen;
         } catch (NoSuchAlgorithmException e) {
             JOptionPane.showMessageDialog(null,e.getMessage(),"NoSuchAlgorithmException",JOptionPane.ERROR_MESSAGE);
