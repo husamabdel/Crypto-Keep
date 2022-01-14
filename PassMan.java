@@ -2,6 +2,7 @@ import java.util.Scanner;
 import java.io.*;
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
+import javax.sound.sampled.ReverbType;
 import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -44,17 +45,17 @@ public class PassMan extends JFrame{
 	public PassMan() {
 		
 		this.setTitle("Pass Man");
-		this.setSize(780,400);
+		this.setSize(420,500);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLayout(new BorderLayout());
 		panel1Set();
 		panel2Set();
 		panel3Set();
-		this.add(panel1, BorderLayout.WEST);
-		this.add(panel2, BorderLayout.CENTER);
-		this.add(panel3, BorderLayout.EAST);
+		this.add(panel1, BorderLayout.NORTH);
+		this.add(panel2, BorderLayout.SOUTH);
+		this.add(panel3, BorderLayout.CENTER);
 		//this.pack();
-		this.setResizable(true);
+		this.setResizable(false);
 		this.setVisible(true);
 		
 	}
@@ -78,7 +79,7 @@ public class PassMan extends JFrame{
 	public void panel1Set() {
 		
 		panel1 = new JPanel();
-		panel1.setLayout(new GridLayout(4,0));
+		panel1.setLayout(new GridLayout(0,4));
 		button = new JButton("favorites");
 		link = new JButton("Link");
 		group = new JButton("Group 1");
@@ -95,49 +96,62 @@ public class PassMan extends JFrame{
 	public void panel2Set() {
 		
 		panel2 = new JPanel();
-		panel2.setLayout(new FlowLayout());
+		panel2.setLayout(new FlowLayout());	
 		
-		textUser = new JTextField(12);
+		reveal = new JButton("Reveal");
+		reveal.addActionListener(new DECRYPT_USER_PASS());
 		
-		textPass = new JTextField(12);
-		
-		add = new JButton("Add");
-		add.addActionListener(new ADD_AND_ENCRYPT());
-		
-		panel2.add(add);
-		panel2.add(textUser);
-		panel2.add(textPass);
-		
+		panel2.add(reveal);
+
 	}
 	
 	//View and decrypt panel
 	public void panel3Set(){
 		
-	
 		panel3 = new JPanel();
 		panel3.setLayout(new FlowLayout());
+		
+		textUser = new JTextField(12);
+		textPass.setText("username here");
+		textPass = new JTextField(12);
+		textPass.setText("password here");
+		add = new JButton("Add");
+		add.addActionListener(new ADD_AND_ENCRYPT());
+		
+		panel3.add(add);
+		panel3.add(textUser);
+		panel3.add(textPass);
+		
+		
+		////////////////////////////////////////////
+		
+		
+		
 		
 		//JLabel label = new JLabel();
 		//label.setText("Username and Password");
 		
-		reveal = new JButton("Reveal");
-		reveal.addActionListener(new DECRYPT_USER_PASS());
 		
     	list = new JList(load_list());
     	pane = new JScrollPane(list, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		list.setVisibleRowCount(6);
-		reveal_user = new JTextField(12);
-		//reveal_user.setEditable(false);
-		reveal_pass = new JTextField(12);
-		//reveal_pass.setEditable(false);
-		panel3.add(reveal);
+		reveal_user = new JTextField(15);
+		reveal_user.setEditable(false);
+		reveal_pass = new JTextField(15);
+		reveal_pass.setEditable(false);
+
+		JPanel p = new JPanel();
+		p.setLayout(new BorderLayout());
+		p.add(reveal_user, BorderLayout.NORTH);
+		p.add(reveal_pass, BorderLayout.SOUTH );
+
+		//panel3.add(reveal);
 		//panel3.add(list);
 		panel3.add(pane);
-		panel3.add(reveal_user);
-		panel3.add(reveal_pass);
+		panel3.add(p);
+		
 		//panel3.add(label, BorderLayout.CENTER);
 		
-	
 }
 	
 	
@@ -441,6 +455,7 @@ public class PassMan extends JFrame{
     				
 					try {
 						
+						
 						String dPass = new String(new crypto().decrypt(passwords.get(x), load_key(), "def.txt"));
 						reveal_user.setText(selectedVauled);
 						reveal_pass.setText(dPass);
@@ -471,10 +486,9 @@ public class PassMan extends JFrame{
     
     
     
-    public static void main(String []args){
+    public static void main(String []args) throws FileNotFoundException{
     	
     	if(!flag()) {
-    		
     		try {
 				Setup();
 			} catch (IOException e) {
@@ -495,6 +509,7 @@ public class PassMan extends JFrame{
     	
     	
     		load_list();
+			auth();
     		new PassMan();
     	
     }
