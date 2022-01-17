@@ -496,6 +496,7 @@ public class PassMan extends JFrame{
     	if(flag() == false) {
     		try {
 				Setup();
+				new PassMan();
 			} catch (IOException e) {
 			
 				JOptionPane.showMessageDialog(null, e.getMessage(), "FileNotFoundException", JOptionPane.ERROR_MESSAGE);
