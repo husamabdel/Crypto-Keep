@@ -1,6 +1,7 @@
 import java.util.Scanner;
 import java.io.*;
 import javax.crypto.*;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.*;
 import java.awt.BorderLayout;
@@ -14,12 +15,26 @@ import java.security.*;
 public class crypto {
 
 
+	private byte[] iv = {0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1};
+    private byte[] specs;
+    private IvParameterSpec ivspec = new IvParameterSpec(iv);
 
-    //Used to convert encoded String key from file into actual key.
+	//Used to convert encoded String key from file into actual key.
     public SecretKeySpec returner(String key)throws NoSuchAlgorithmException{
 
         SecretKeySpec keyspec;
-        keyspec = new SecretKeySpec(key.getBytes(), "AES");
+        byte[] decodedBytes = Base64.getDecoder().decode(key.getBytes());
+        keyspec = new SecretKeySpec(Arrays.copyOf(decodedBytes,16), "AES");
+        
+        return keyspec;
+        
+    }
+    
+    public SecretKeySpec returner2(byte[] key)throws NoSuchAlgorithmException{
+
+        SecretKeySpec keyspec;
+        keyspec = new SecretKeySpec(key, "AES");
+        
         return keyspec;
         
     }
@@ -30,7 +45,10 @@ public class crypto {
 
         try {
             
-            SecretKey gen = KeyGenerator.getInstance("AES").generateKey();
+        	KeyGenerator g = KeyGenerator.getInstance("AES");
+        	g.init(256);
+        	
+            SecretKey gen = g.generateKey();
 
             return gen;
         } catch (NoSuchAlgorithmException e) {
@@ -44,10 +62,10 @@ public class crypto {
 	//encryption method.
     public byte[] encrypt(String TEXT, String key, String filename)throws Exception{
         
-        Cipher cipher = Cipher.getInstance("AES");
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         SecretKeySpec spec = returner(getKey(filename));
         byte[] enc = TEXT.getBytes();
-        cipher.init(Cipher.ENCRYPT_MODE, spec);
+        cipher.init(Cipher.ENCRYPT_MODE, spec, ivspec);
         byte[] after = cipher.doFinal(enc);
         
         return after;
@@ -59,25 +77,40 @@ public class crypto {
     	File file = new File(filename);
     	Scanner fileStream = new Scanner(file);
     	
-        String[] spec = new String[5];
+        //String[] spec = new String[5];
 
+        //int x = 0;
+    	//while(fileStream.hasNextLine()) {
+    	    String spec = fileStream.nextLine();
+            //x++;
+    	//}
+        fileStream.close();
+    	return spec;
+    
+    }
+    
+    public byte[] getKeyByte(String filename) throws FileNotFoundException, NoSuchAlgorithmException {
+    	
+    	File file = new File(filename);
+    	Scanner fileStream = new Scanner(file);
+    	
         int x = 0;
-    	while(fileStream.hasNextLine()) {
-    	    spec[x] = fileStream.nextLine();
+    	while(fileStream.hasNext()) {
+    	    specs[x] = fileStream.nextByte();
             x++;
     	}
         fileStream.close();
-    	return spec[0];
+    	return specs;
     
     }
     
     // decryption takes place here...
     public byte[] decrypt(String TEXT, String key, String filename)throws Exception{
         
-        Cipher cipher = Cipher.getInstance("AES");
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         SecretKeySpec spec = returner(getKey(filename));
         byte[] dec = TEXT.getBytes();
-        cipher.init(Cipher.DECRYPT_MODE, spec);
+        cipher.init(Cipher.DECRYPT_MODE, spec, ivspec);
         byte[] after = cipher.doFinal(dec);
         
         return after;
