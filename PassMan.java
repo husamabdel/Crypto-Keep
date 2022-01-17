@@ -11,6 +11,7 @@ import java.awt.Desktop.*;
 import java.awt.event.*;
 import java.util.*;
 import java.security.*;
+import java.util.Base64;
 
 public class PassMan extends JFrame{
 
@@ -171,7 +172,8 @@ public class PassMan extends JFrame{
 		if(file.exists()) {
 			return true;
 		}
-		return false;
+			else{return false;}
+			
 	}
 	//start a new file if data is not set , this is called IF first function is false
 	
@@ -192,10 +194,10 @@ public class PassMan extends JFrame{
 			keyStore.fileStart(pass, "default.txt");
 			crypto cKey = new crypto();
 			byte[] bytekey = cKey.keyGen().getEncoded();
-			String format = new String(bytekey);
+			//String format = new String(bytekey);
+			String format = Base64.getEncoder().encodeToString(bytekey);
 			keyStore.fileStart(format,"def.txt");
-			keyStore.filStartBin(format, "def.dat");
-		
+			keyStore.filStartBinbyte(bytekey, "def.dat");
 		
 		UsernameFile.close();
 		PasswordFile.close();
@@ -408,8 +410,8 @@ public class PassMan extends JFrame{
 				byte[] encryptedUser = crypt.encrypt(uname, load_key(), "def.txt");
 				byte[] encryptedPass = crypt.encrypt(pwd, load_key(), "def.txt");
 				
-				String getuBytes = new String(encryptedUser);
-				String getpBytes = new String(encryptedPass);
+				String getuBytes = Base64.getEncoder().encodeToString(encryptedUser);
+				String getpBytes = Base64.getEncoder().encodeToString(encryptedPass);
 				 ADV_IO io = new ADV_IO();
 				 io.fileOpen("uname_list.txt", uname);
 				 io.fileOpen("usernames.txt", getuBytes);
@@ -455,8 +457,10 @@ public class PassMan extends JFrame{
     				
 					try {
 						
+						byte[] xy = Base64.getDecoder().decode(passwords.get(x));
+						String dec = new String(xy);
 						
-						String dPass = new String(new crypto().decrypt(passwords.get(x), load_key(), "def.txt"));
+						String dPass = new String(new crypto().decrypt(dec, load_key(), "def.txt"));
 						reveal_user.setText(selectedVauled);
 						reveal_pass.setText(dPass);
 					
@@ -464,10 +468,11 @@ public class PassMan extends JFrame{
 					catch (Exception e1) {
 						e1.printStackTrace();
 					}
-    			
-
 
 				}
+    			
+    			
+    			
     		}
     		
     	}
@@ -488,7 +493,7 @@ public class PassMan extends JFrame{
     
     public static void main(String []args) throws FileNotFoundException{
     	
-    	if(!flag()) {
+    	if(flag() == false) {
     		try {
 				Setup();
 			} catch (IOException e) {
@@ -499,19 +504,21 @@ public class PassMan extends JFrame{
     		
     	}
     	
-    	try {
-			load_txt_elements();
-		} catch (FileNotFoundException e) {
+    		
+		else if(flag() == true){
+				try {
+				load_txt_elements();
+				load_list();
+				auth();
+				new PassMan();
+				} catch (FileNotFoundException e) {
 	
-			JOptionPane.showMessageDialog(null, e.getMessage(), "FileNotFoundException", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, e.getMessage(), "FileNotFoundException", JOptionPane.ERROR_MESSAGE);
 			
+			}
+    	
+
 		}
-    	
-    	
-    		load_list();
-			auth();
-    		new PassMan();
-    	
     }
 	
 }
