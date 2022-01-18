@@ -49,6 +49,13 @@ public class ADV_IO {
 		stream.close();
 		
 	}
+
+	public void filStartBinbyte(byte[] data, String filename) throws IOException{
+
+		DataOutputStream stream = new DataOutputStream(new FileOutputStream(filename));
+		stream.write(data);
+
+	}
 	
 	public String IO_stream(String path) throws FileNotFoundException {
 		this.path = path;
