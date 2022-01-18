@@ -15,7 +15,7 @@ import java.security.*;
 public class crypto {
 
 
-	private byte[] iv = {0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 1, 1};
+	private byte[] iv = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     private byte[] specs;
     private IvParameterSpec ivspec = new IvParameterSpec(iv);
 
@@ -46,7 +46,7 @@ public class crypto {
         try {
             
         	KeyGenerator g = KeyGenerator.getInstance("AES");
-        	g.init(256);
+        	g.init(128);
         	
             SecretKey gen = g.generateKey();
 
