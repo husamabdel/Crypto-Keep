@@ -302,9 +302,9 @@ public class PassMan extends JFrame{
     	
 	public String load_key() throws FileNotFoundException{
 
-		File file = new File("def.txt");
+		File file = new File("def.dat");
 		Scanner scan = new Scanner(file);
-		String key = scan.nextLine();
+		String key = new String(scan.next());
 		scan.close();
 		return key;
 
