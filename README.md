@@ -1,3 +1,7 @@
+
+[Pass Man.docx](https://github.com/husamabdel/PassMan---Offline-Password-Manager/files/7908000/Pass.Man.docx)
+
+
 /*
 	V1.0.0
 
