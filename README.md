@@ -1,3 +1,5 @@
+[CryptoKeep password manager.docx](https://github.com/husamabdel/PassMan---Offline-Password-Manager/files/7908002/CryptoKeep.password.manager.docx)
+
 
 [Pass Man.docx](https://github.com/husamabdel/PassMan---Offline-Password-Manager/files/7908000/Pass.Man.docx)
 
