@@ -11,7 +11,7 @@
 	
 	WARNING! PLEASE DO NOT USE AT CURRENT STATE, THERE IS MORE WORK TO BE DONE! CURRENTLY IT IS NOT SECURE AS KEYS ARE NOT HASHED!!
 
-	Task Man.
+	Crypto Keep.
 	Husam Abdalla.
 	
 	CONTACT (habdalla@loc.gov, Husamabdalla98@gmail.com) for suggestions or to report Bugs.
