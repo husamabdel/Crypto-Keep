@@ -107,6 +107,7 @@ public class PassMan extends JFrame{
 		clear = new JButton("Clear");
 		clear.addActionListener(new CLEAR_BUTTON());
 		
+		panel2.add(clear);
 		panel2.add(reveal);
 
 	}
