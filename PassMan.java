@@ -177,27 +177,32 @@ public class PassMan extends JFrame{
 	}
 	//start a new file if data is not set , this is called IF first function is false
 	
-	public static void Setup() throws IOException {
+		public static void Setup() throws Exception {
 		
-		JOptionPane.showMessageDialog(null,"Welcome to Pass Man Pro, the setup process will now begin","Setup.exe",JOptionPane.OK_OPTION);
+		JOptionPane.showMessageDialog(null,"Welcome to Crypto Keep Pro, the setup process will now begin","Setup.exe",JOptionPane.OK_OPTION);
 		JOptionPane.showMessageDialog(null,"A new file has been created!","FileNotFound",JOptionPane.OK_OPTION);
 
 		PrintWriter UsernameFile = new PrintWriter("usernames.txt");
 		PrintWriter decrypted_unames = new PrintWriter("uname_list.txt");
 		PrintWriter PasswordFile = new PrintWriter("passwords.txt");
 		String pass = JOptionPane.showInputDialog("Please create a  Master key to proceed");
+
+			MessageDigest md = MessageDigest.getInstance("SHA512");
+			byte[] passHash = md.digest(pass.getBytes());
+			String finalPass = new String(passHash);
+
 		
 		//Key and Password storing
 		ADV_IO keyStore = new ADV_IO();
 	
-			keyStore.filStartBin(pass, "default.dat");
+			keyStore.filStartBin(finalPass, "default.dat");
 			keyStore.fileStart(pass, "default.txt");
 			crypto cKey = new crypto();
 			byte[] bytekey = cKey.keyGen().getEncoded();
-			//String format = new String(bytekey);
-			String format = Base64.getEncoder().encodeToString(bytekey);
+			String format = new String(bytekey);
 			keyStore.fileStart(format,"def.txt");
-			keyStore.filStartBinbyte(bytekey, "def.dat");
+			keyStore.filStartBin(format, "def.dat");
+		
 		
 		UsernameFile.close();
 		PasswordFile.close();
@@ -310,21 +315,25 @@ public class PassMan extends JFrame{
 
 	}
 
-	public static void auth() throws FileNotFoundException{
+public static void auth() throws FileNotFoundException, NoSuchAlgorithmException{
 
 		File file = new File("default.txt");
 		Scanner scan = new Scanner(file);
 		String pwd = scan.nextLine();
+		MessageDigest md = MessageDigest.getInstance("SHA512");
+			byte[] passHash = md.digest(pwd.getBytes());
+			String finalPass = new String(passHash);
 
 		while(true){
 			String pass = JOptionPane.showInputDialog("Please enter Master key to proceed");
-			if(pass.equals(pwd)){
+			if(pass.equals(finalPass)){
 				break;
 			}
 			else{
 				JOptionPane.showMessageDialog(null,"Error! bad Master Key!","ERR",JOptionPane.OK_OPTION);
 			}
 		}
+		scan.close();
 
 
 	}
