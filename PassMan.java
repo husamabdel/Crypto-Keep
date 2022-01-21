@@ -5,6 +5,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.sound.sampled.ReverbType;
 import javax.swing.*;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Desktop.*;
@@ -33,6 +34,7 @@ public class PassMan extends JFrame{
 	private JButton group;
 	private JButton group2;
 	private JButton reveal;
+	private JButton clear;
 	private JFileChooser filer;
 	private static String filename = "default.dat";
 	//private File mainFile;
@@ -56,7 +58,7 @@ public class PassMan extends JFrame{
 		this.add(panel2, BorderLayout.SOUTH);
 		this.add(panel3, BorderLayout.CENTER);
 		//this.pack();
-		this.setResizable(false);
+		//this.setResizable(false);
 		this.setVisible(true);
 		
 	}
@@ -101,6 +103,9 @@ public class PassMan extends JFrame{
 		
 		reveal = new JButton("Reveal");
 		reveal.addActionListener(new DECRYPT_USER_PASS());
+
+		clear = new JButton("Clear");
+		clear.addActionListener(new CLEAR_BUTTON());
 		
 		panel2.add(reveal);
 
@@ -109,15 +114,23 @@ public class PassMan extends JFrame{
 	//View and decrypt panel
 	public void panel3Set(){
 		
+	
+
 		panel3 = new JPanel();
 		panel3.setLayout(new FlowLayout());
+		panel3.setBackground(Color.WHITE);
 		
+		JLabel label = new JLabel();
+		ImageIcon icon = new ImageIcon("passman.png");
+		label.setIcon(icon);
+
 		textUser = new JTextField(12);
 		textUser.setText("username here");
 		textPass = new JTextField(12);
 		textPass.setText("password here");
 		add = new JButton("Add");
 		add.addActionListener(new ADD_AND_ENCRYPT());
+		
 		
 		panel3.add(add);
 		panel3.add(textUser);
@@ -150,7 +163,7 @@ public class PassMan extends JFrame{
 		//panel3.add(list);
 		panel3.add(pane);
 		panel3.add(p);
-		
+		panel3.add(label);
 		//panel3.add(label, BorderLayout.CENTER);
 		
 }
@@ -187,7 +200,7 @@ public class PassMan extends JFrame{
 		PrintWriter PasswordFile = new PrintWriter("passwords.txt");
 		String pass = JOptionPane.showInputDialog("Please create a  Master key to proceed");
 
-			MessageDigest md = MessageDigest.getInstance("SHA512");
+			MessageDigest md = MessageDigest.getInstance("SHA-512");
 			byte[] passHash = md.digest(pass.getBytes());
 			String finalPass = new String(passHash);
 
@@ -196,12 +209,12 @@ public class PassMan extends JFrame{
 		ADV_IO keyStore = new ADV_IO();
 	
 			keyStore.filStartBin(finalPass, "default.dat");
-			keyStore.fileStart(pass, "default.txt");
+			keyStore.fileStart(finalPass, "default.txt");
 			crypto cKey = new crypto();
 			byte[] bytekey = cKey.keyGen().getEncoded();
-			String format = new String(bytekey);
-			keyStore.fileStart(format,"def.txt");
-			keyStore.filStartBin(format, "def.dat");
+			String baseKey = Base64.getEncoder().encodeToString(bytekey);
+			keyStore.fileStart(baseKey,"def.txt");
+			keyStore.filStartBin(baseKey, "def.dat");
 		
 		
 		UsernameFile.close();
@@ -320,13 +333,15 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 		File file = new File("default.txt");
 		Scanner scan = new Scanner(file);
 		String pwd = scan.nextLine();
-		MessageDigest md = MessageDigest.getInstance("SHA512");
-			byte[] passHash = md.digest(pwd.getBytes());
-			String finalPass = new String(passHash);
 
 		while(true){
 			String pass = JOptionPane.showInputDialog("Please enter Master key to proceed");
-			if(pass.equals(finalPass)){
+			MessageDigest md = MessageDigest.getInstance("SHA-512");
+			byte[] passHash = md.digest(pass.getBytes());
+			String finalPass = new String(passHash);
+
+
+			if(finalPass.equals(pwd)){
 				break;
 			}
 			else{
@@ -456,6 +471,9 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 				auth();
 			} catch (FileNotFoundException e1) {
 				e1.printStackTrace();
+			} catch (NoSuchAlgorithmException e1) {
+				
+				e1.printStackTrace();
 			}
     		String selectedVauled = (String) list.getSelectedValue();
     		
@@ -488,6 +506,21 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
     	
     }
   
+
+	// Action Listener for the clear button:
+
+	private class CLEAR_BUTTON implements ActionListener{
+
+
+		public void actionPerformed(ActionEvent e){
+
+			reveal_user.setText(null);
+			reveal_pass.setText(null);
+
+		}
+
+
+	}
   
     
     
@@ -500,7 +533,7 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
     
     
     
-    public static void main(String []args) throws FileNotFoundException{
+    public static void main(String []args) throws Exception{
     	
     	if(flag() == false) {
     		try {
