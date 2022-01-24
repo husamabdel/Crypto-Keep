@@ -37,11 +37,13 @@ public class PassMan extends JFrame{
 	private JButton clear;
 	private JFileChooser filer;
 	private static String filename = "default.dat";
+	private static String[] unames;
 	//private File mainFile;
 	private static HashMap<String, String> KeyMap;
 	private static ArrayList <String> usernames = new ArrayList<>();
 	private static ArrayList <String> passwords = new ArrayList<>();
 	private static ArrayList <String> uname = new ArrayList<>();
+	private static DefaultListModel<String> model = new DefaultListModel<>();
 	
 
 
@@ -147,7 +149,7 @@ public class PassMan extends JFrame{
 		//label.setText("Username and Password");
 		
 		
-    	list = new JList(load_list());
+    	list = new JList(model);
     	pane = new JScrollPane(list, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		list.setVisibleRowCount(6);
 		reveal_user = new JTextField(15);
@@ -296,15 +298,15 @@ public class PassMan extends JFrame{
     
     // THe function for the Jlist to fill.
     
-    public static String[] load_list(){
+    public static void load_list(){
     	
-    	String[] unames = new String[uname.size()];
+    	unames = new String[uname.size()*2];
     	for(int x = 0; x < uname.size(); x++) {
     		
-    		unames[x] = uname.get(x);
-    		
+    		model.addElement(uname.get(x));
+
     	}
-    		return unames;
+    		
     }
     
     
@@ -443,6 +445,8 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 				 io.fileOpen("passwords.txt", getpBytes);
 				 usernames.add(uname);
 				 passwords.add(pwd);
+				 model.addElement(uname);
+				
 				//KeyMap.put(uname, pwd);
 				
 				
