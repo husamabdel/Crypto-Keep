@@ -13,8 +13,7 @@ public class ADV_IO {
 		this.path = path;
 		this.data = data;
 		
-		FileWriter write = new FileWriter(path, true);
-		PrintWriter file = new PrintWriter(write);
+		PrintWriter file = new PrintWriter(new FileWriter(path, true));
 		file.println(data);
 		file.close();
 	}
