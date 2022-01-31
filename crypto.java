@@ -1,3 +1,4 @@
+import java.util.Scanner;
 import java.io.*;
 import java.math.BigInteger;
 
@@ -117,7 +118,10 @@ public class crypto {
         return after;
     
     }
-   public String GenPass() throws NoSuchAlgorithmException {
+
+    //generate random password.
+
+    public String GenPass() throws NoSuchAlgorithmException {
     	
     	Random rand = new Random();
     	
