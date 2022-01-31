@@ -16,18 +16,28 @@ import java.util.Base64;
 
 public class PassMan extends JFrame{
 
-	private JTextField reveal_pass;
-	private JTextField reveal_user;
-	private JScrollPane scroll;
+
+	
+	
 	private JMenuBar bar;
+	
 	private JList list;
+	
 	private JTextArea area;
+	
 	private JPanel panel1;
 	private JPanel panel2;
 	private JPanel panel3;
+	
 	private JTextField textPass;
 	private JTextField textUser;
+	private JTextField reveal_pass;
+	private JTextField reveal_user;
+	
 	private JScrollPane pane;
+	private JScrollPane scroll;
+	
+	
 	private JButton button;
 	private JButton add;
 	private JButton link;
@@ -35,15 +45,17 @@ public class PassMan extends JFrame{
 	private JButton group2;
 	private JButton reveal;
 	private JButton clear;
+	private JButton random;
+	
 	private JFileChooser filer;
 	private static String filename = "default.dat";
-	private static String[] unames;
+	
 	//private File mainFile;
+	
 	private static HashMap<String, String> KeyMap;
 	private static ArrayList <String> usernames = new ArrayList<>();
 	private static ArrayList <String> passwords = new ArrayList<>();
 	private static ArrayList <String> uname = new ArrayList<>();
-	private static DefaultListModel<String> model = new DefaultListModel<>();
 	
 
 
@@ -109,8 +121,12 @@ public class PassMan extends JFrame{
 		clear = new JButton("Clear");
 		clear.addActionListener(new CLEAR_BUTTON());
 		
+		random = new JButton("Generate password");
+		random.addActionListener(new RANDOM_PASS());
+		
 		panel2.add(clear);
 		panel2.add(reveal);
+		panel2.add(random);
 
 	}
 	
@@ -149,7 +165,7 @@ public class PassMan extends JFrame{
 		//label.setText("Username and Password");
 		
 		
-    	list = new JList(model);
+    	list = new JList(load_list());
     	pane = new JScrollPane(list, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		list.setVisibleRowCount(6);
 		reveal_user = new JTextField(15);
@@ -298,15 +314,15 @@ public class PassMan extends JFrame{
     
     // THe function for the Jlist to fill.
     
-    public static void load_list(){
+    public static String[] load_list(){
     	
-    	unames = new String[uname.size()*2];
+    	String[] unames = new String[uname.size()];
     	for(int x = 0; x < uname.size(); x++) {
     		
-    		model.addElement(uname.get(x));
-
-    	}
+    		unames[x] = uname.get(x);
     		
+    	}
+    		return unames;
     }
     
     
@@ -445,8 +461,6 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 				 io.fileOpen("passwords.txt", getpBytes);
 				 usernames.add(uname);
 				 passwords.add(pwd);
-				 model.addElement(uname);
-				
 				//KeyMap.put(uname, pwd);
 				
 				
@@ -527,7 +541,46 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 
 	}
   
+	
+	// Action Listener to generate a random password.
     
+	
+	private class RANDOM_PASS implements ActionListener{
+		
+		public void actionPerformed(ActionEvent e){
+			
+			
+			String length = JOptionPane.showInputDialog("Please enter the desired length of the password: ");
+			
+			
+			
+			int len = Integer.parseInt(length);
+			
+			crypto pass = new crypto();
+			try {
+				//byte[] en = Base64.getDecoder().decode(pass.GenPass().getBytes());
+				String passwd = pass.GenPass();
+				char[] c = passwd.toCharArray();
+				char[] trans = new char[len];
+				
+				for(int x = 0; x < len; x++) {
+					
+					trans[x] = c[x];
+					
+				}
+				String doFinal = new String(trans);
+				
+				
+				textPass.setText(doFinal);
+				
+			} catch (NoSuchAlgorithmException e1) {
+				e1.printStackTrace();
+			}
+			
+		}
+		
+	}
+	
     
     
     ////////////////////////////////////////////
