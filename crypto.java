@@ -1,5 +1,6 @@
-import java.util.Scanner;
 import java.io.*;
+import java.math.BigInteger;
+
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -115,6 +116,21 @@ public class crypto {
         
         return after;
     
+    }
+   public String GenPass() throws NoSuchAlgorithmException {
+    	
+    	Random rand = new Random();
+    	
+    	int num = rand.nextInt();
+    	
+    	BigInteger num2 = BigInteger.valueOf(num);
+   
+    	MessageDigest hash = MessageDigest.getInstance("SHA-256");
+    	byte [] toBeRandom = Base64.getEncoder().encode(hash.digest(num2.toByteArray()));
+    	String randomPassword = new String(toBeRandom);
+    
+    	return randomPassword;
+    	
     }
 
     /*
