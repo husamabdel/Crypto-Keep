@@ -17,7 +17,7 @@ import java.util.Base64;
 public class PassMan extends JFrame{
 
 	
-	private JMenuBar bar;
+	private JMenuBar bar = new JMenuBar();
 	
 	private JList list;
 	
@@ -61,17 +61,19 @@ public class PassMan extends JFrame{
 	public PassMan() {
 		
 		this.setTitle("Pass Man");
-		this.setSize(420,500);
+		this.setSize(450,520);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLayout(new BorderLayout());
 		panel1Set();
+		setMenuBar1();
 		panel2Set();
 		panel3Set();
 		this.add(panel1, BorderLayout.NORTH);
+		this.setJMenuBar(bar);
 		this.add(panel2, BorderLayout.SOUTH);
 		this.add(panel3, BorderLayout.CENTER);
 		//this.pack();
-		//this.setResizable(false);
+		this.setResizable(false);
 		this.setVisible(true);
 		
 	}
@@ -82,18 +84,41 @@ public class PassMan extends JFrame{
     //			
     ///////////////////////////////////////////////////////////////////////
 	
-	public void setMenuBar() {
+	public void setMenuBar1() {
 		
-		bar = new JMenuBar();
-		JMenu menu1 = new JMenu("File");
-		JMenuItem item = new JMenuItem("file");
-		menu1.add(item);
+		
+		JMenu FileM = new JMenu("File");
+		JMenuItem fileE = new JMenuItem("File controls");
+		JMenuItem item = new JMenuItem("Encrypt a file");
+		item.addActionListener(new FILE_ENCRYPT());
+		
+		
+
+
+		JMenuItem exit = new JMenuItem("exit");
+		exit.addActionListener(new TASK_EXIT());
+
+		JMenu help = new JMenu("Help");
+		JMenuItem readme = new JMenuItem("Readme");
+
+
+		FileM.add(fileE);
+		FileM.add(item);
+		FileM.add(exit);
+		
+		help.add(readme);
+
+		bar.add(FileM);
+		bar.add(help);
 		
 	}
 
 	//Groups panel.
+
 	public void panel1Set() {
 		
+
+
 		panel1 = new JPanel();
 		panel1.setLayout(new GridLayout(0,4));
 		button = new JButton("favorites");
@@ -106,7 +131,7 @@ public class PassMan extends JFrame{
 		panel1.add(group);
 		panel1.add(group2);
 		
-	}
+	}	
 	
 	//Adding Passwords Panel
 	public void panel2Set() {
@@ -341,6 +366,16 @@ public class PassMan extends JFrame{
 		File file = new File("def.dat");
 		Scanner scan = new Scanner(file);
 		String key = new String(scan.next());
+		scan.close();
+		return key;
+
+	}
+
+	public String load_key_string() throws FileNotFoundException{
+
+		File file = new File("def.txt");
+		Scanner scan = new Scanner(file);
+		String key = scan.nextLine();
 		scan.close();
 		return key;
 
@@ -582,8 +617,45 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 	}
 	
     
+    /////////////////////////
+	// For the Menu Bars::
+	/////////////////////////
     
-    
+
+	private class TASK_EXIT implements ActionListener{
+
+		public void actionPerformed(ActionEvent e){
+
+			System.exit(0);
+
+		}
+
+	}
+
+	private class FILE_ENCRYPT implements ActionListener{
+
+		public void actionPerformed(ActionEvent e){
+
+			try {
+			
+				new cryptor(new crypto().returner(load_key_string()));
+				
+				
+				 	
+			
+			
+			} 
+			
+			
+			catch (Exception e1) {
+				e1.printStackTrace();
+			}
+			
+
+		}
+
+	}
+
     
     ////////////////////////////////////////////
     //
