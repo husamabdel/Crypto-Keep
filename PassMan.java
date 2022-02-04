@@ -1,5 +1,8 @@
 import java.util.Scanner;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 import javax.sound.sampled.ReverbType;
@@ -256,8 +259,15 @@ public class PassMan extends JFrame{
 			crypto cKey = new crypto();
 			byte[] bytekey = cKey.keyGen().getEncoded();
 			String baseKey = Base64.getEncoder().encodeToString(bytekey);
+			
+			//This is for the key to be stored as a String!
 			keyStore.fileStart(baseKey,"def.txt");
+			
+			//This is for the key to be stored as a string data encoded!!
 			keyStore.filStartBin(baseKey, "def.dat");
+
+			//This if for the key to be stored as RAW byte array!! No conversion!!
+			keyStore.filStartBinByte(bytekey, "bytekey.dat");
 		
 		
 		UsernameFile.close();
@@ -381,6 +391,17 @@ public class PassMan extends JFrame{
 
 	}
 
+	public byte[] load_key_byte() throws IOException{
+
+		//File file = new File("bytekey.dat");
+		//DataInputStream stream = new DataInputStream(new FileInputStream(file));
+		byte[] key = Files.readAllBytes(Paths.get("bytekey.dat"));
+		
+		return key;
+
+	}
+
+
 public static void auth() throws FileNotFoundException, NoSuchAlgorithmException{
 
 		File file = new File("default.txt");
@@ -484,8 +505,8 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 
 				crypto crypt = new crypto();
 
-				byte[] encryptedUser = crypt.encrypt(uname, load_key(), "def.txt");
-				byte[] encryptedPass = crypt.encrypt(pwd, load_key(), "def.txt");
+				byte[] encryptedUser = crypt.encrypt(uname, load_key_byte(), "def.txt");
+				byte[] encryptedPass = crypt.encrypt(pwd, load_key_byte(), "def.txt");
 				
 				String getuBytes = Base64.getEncoder().encodeToString(encryptedUser);
 				String getpBytes = Base64.getEncoder().encodeToString(encryptedPass);
@@ -542,7 +563,7 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 						byte[] xy = Base64.getDecoder().decode(passwords.get(x));
 						String dec = new String(xy);
 						
-						String dPass = new String(new crypto().decrypt(dec, load_key(), "def.txt"));
+						String dPass = new String(new crypto().decrypt(dec, load_key_byte(), "def.txt"));
 						reveal_user.setText(selectedVauled);
 						reveal_pass.setText(dPass);
 					
