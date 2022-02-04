@@ -13,7 +13,8 @@ public class ADV_IO {
 		this.path = path;
 		this.data = data;
 		
-		PrintWriter file = new PrintWriter(new FileWriter(path, true));
+		FileWriter write = new FileWriter(path, true);
+		PrintWriter file = new PrintWriter(write);
 		file.println(data);
 		file.close();
 	}
@@ -25,6 +26,18 @@ public class ADV_IO {
 		
 		DataOutputStream stream = new DataOutputStream(new FileOutputStream(path, true));
 		stream.writeUTF(data);
+		stream.close();
+		
+	}
+
+	//Open the file as a byte array!
+	public void fileOpenBinByte(String path, byte[] data)throws IOException{
+		
+		this.path = path;
+		//this.data = data;
+		
+		DataOutputStream stream = new DataOutputStream(new FileOutputStream(path, true));
+		stream.write(data);
 		stream.close();
 		
 	}
@@ -49,7 +62,8 @@ public class ADV_IO {
 		
 	}
 
-	public void filStartBinbyte(byte[] data, String filename) throws IOException{
+	// Start a new file and save data as a Byte array.
+	public void filStartBinByte(byte[] data, String filename) throws IOException{
 
 		DataOutputStream stream = new DataOutputStream(new FileOutputStream(filename));
 		stream.write(data);
