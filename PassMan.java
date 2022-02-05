@@ -401,6 +401,14 @@ public class PassMan extends JFrame{
 
 	}
 
+	public byte [] GetProperKey() throws IOException, NoSuchAlgorithmException{
+
+		byte[] HashToGet = Files.readAllBytes(Paths.get("default.dat"));
+		MessageDigest md = MessageDigest.getInstance("SHA-256");
+		return md.digest(HashToGet);
+
+	}
+
 
 public static void auth() throws FileNotFoundException, NoSuchAlgorithmException{
 
@@ -505,8 +513,8 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 
 				crypto crypt = new crypto();
 
-				byte[] encryptedUser = crypt.encrypt(uname, load_key_byte(), "def.txt");
-				byte[] encryptedPass = crypt.encrypt(pwd, load_key_byte(), "def.txt");
+				byte[] encryptedUser = crypt.encrypt(uname, GetProperKey(), "def.txt");
+				byte[] encryptedPass = crypt.encrypt(pwd, GetProperKey(), "def.txt");
 				
 				String getuBytes = Base64.getEncoder().encodeToString(encryptedUser);
 				String getpBytes = Base64.getEncoder().encodeToString(encryptedPass);
@@ -563,7 +571,7 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 						byte[] xy = Base64.getDecoder().decode(passwords.get(x));
 						String dec = new String(xy);
 						
-						String dPass = new String(new crypto().decrypt(dec, load_key_byte(), "def.txt"));
+						String dPass = new String(new crypto().decrypt(dec, GetProperKey(), "def.txt"));
 						reveal_user.setText(selectedVauled);
 						reveal_pass.setText(dPass);
 					
