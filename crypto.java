@@ -65,7 +65,7 @@ public class crypto {
     public byte[] encrypt(String TEXT, byte[] key, String filename)throws Exception{
         
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-        SecretKeySpec spec = returner2(key);
+        SecretKeySpec spec = new SecretKeySpec(key, "AES");
         byte[] enc = TEXT.getBytes();
         cipher.init(Cipher.ENCRYPT_MODE, spec, ivspec);
         byte[] after = cipher.doFinal(enc);
@@ -110,10 +110,10 @@ public class crypto {
     public byte[] decrypt(String TEXT, byte[] key, String filename)throws Exception{
         
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-        SecretKeySpec spec = returner2(key);
-        byte[] dec = TEXT.getBytes();
+        SecretKeySpec spec = new SecretKeySpec(key, "AES");
+        byte[] enc = TEXT.getBytes();
         cipher.init(Cipher.DECRYPT_MODE, spec, ivspec);
-        byte[] after = cipher.doFinal(dec);
+        byte[] after = cipher.doFinal(enc);
         
         return after;
     
