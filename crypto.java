@@ -62,13 +62,12 @@ public class crypto {
     }
 
 	//encryption method.
-    public byte[] encrypt(String TEXT, byte[] key, String filename)throws Exception{
+    public byte[] encrypt(byte[] TEXT, byte[] key, String filename)throws Exception{
         
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         SecretKeySpec spec = new SecretKeySpec(key, "AES");
-        byte[] enc = TEXT.getBytes();
         cipher.init(Cipher.ENCRYPT_MODE, spec, ivspec);
-        byte[] after = cipher.doFinal(enc);
+        byte[] after = cipher.doFinal(TEXT);
         
         return after;
     
@@ -107,13 +106,13 @@ public class crypto {
     }
     
     // decryption takes place here...
-    public byte[] decrypt(String TEXT, byte[] key, String filename)throws Exception{
+    public byte[] decrypt(byte[] TEXT, byte[] key, String filename)throws Exception{
         
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         SecretKeySpec spec = new SecretKeySpec(key, "AES");
-        byte[] enc = TEXT.getBytes();
+        
         cipher.init(Cipher.DECRYPT_MODE, spec, ivspec);
-        byte[] after = cipher.doFinal(enc);
+        byte[] after = cipher.doFinal(TEXT);
         
         return after;
     
