@@ -254,7 +254,7 @@ public class PassMan extends JFrame{
 		//Key and Password storing
 		ADV_IO keyStore = new ADV_IO();
 	
-			keyStore.filStartBin(finalPass, "default.dat");
+			keyStore.filStartBinByte(passHash, "default.dat");
 			keyStore.fileStart(finalPass, "default.txt");
 			crypto cKey = new crypto();
 			byte[] bytekey = cKey.keyGen().getEncoded();
@@ -513,8 +513,8 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 
 				crypto crypt = new crypto();
 
-				byte[] encryptedUser = crypt.encrypt(uname, GetProperKey(), "def.txt");
-				byte[] encryptedPass = crypt.encrypt(pwd, GetProperKey(), "def.txt");
+				byte[] encryptedUser = crypt.encrypt(uname.getBytes(), GetProperKey(), "def.txt");
+				byte[] encryptedPass = crypt.encrypt(pwd.getBytes(), GetProperKey(), "def.txt");
 				
 				String getuBytes = Base64.getEncoder().encodeToString(encryptedUser);
 				String getpBytes = Base64.getEncoder().encodeToString(encryptedPass);
@@ -548,7 +548,7 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
     
     private class DECRYPT_USER_PASS implements ActionListener{
     	
-    	@Override
+    	
     	public void actionPerformed(ActionEvent e) {
     	
 			try {
@@ -569,9 +569,9 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 					try {
 						
 						byte[] xy = Base64.getDecoder().decode(passwords.get(x));
-						String dec = new String(xy);
+						//String dec = new String(xy);
 						
-						String dPass = new String(new crypto().decrypt(dec, GetProperKey(), "def.txt"));
+						String dPass = new String(new crypto().decrypt(xy, GetProperKey(), "def.txt"));
 						reveal_user.setText(selectedVauled);
 						reveal_pass.setText(dPass);
 					
