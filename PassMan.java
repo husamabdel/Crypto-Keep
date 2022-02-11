@@ -58,6 +58,12 @@ public class PassMan extends JFrame{
 	private static ArrayList <String> passwords = new ArrayList<>();
 	private static ArrayList <String> uname = new ArrayList<>();
 	private static DefaultListModel<String> model = new DefaultListModel<>();
+	private static DefaultListModel<String> favorites = new DefaultListModel<>();
+	private static DefaultListModel<String> group11 = new DefaultListModel<>();
+	private static DefaultListModel<String> group22 = new DefaultListModel<>();
+	private static DefaultListModel<String> linkS = new DefaultListModel<>();
+
+
 	private static String[] unames;
 
 
@@ -91,7 +97,13 @@ public class PassMan extends JFrame{
 		
 		
 		JMenu FileM = new JMenu("File");
-		JMenuItem fileE = new JMenuItem("File controls");
+		JMenu filecontrol = new JMenu("File controls");
+
+		//JMenuItem fileE = new JMenuItem("File controls");
+		JMenuItem export = new JMenuItem("Export Data");
+		JMenuItem import1 = new JMenuItem("Import Data");
+		
+
 		JMenuItem item = new JMenuItem("Encrypt a file");
 		item.addActionListener(new FILE_ENCRYPT());
 		
@@ -104,8 +116,14 @@ public class PassMan extends JFrame{
 		JMenu help = new JMenu("Help");
 		JMenuItem readme = new JMenuItem("Readme");
 
+		export.addActionListener(new exportData());
 
-		FileM.add(fileE);
+		filecontrol.add(export);
+		filecontrol.add(import1);
+
+		
+		FileM.add(filecontrol);
+		FileM.addSeparator();
 		FileM.add(item);
 		FileM.add(exit);
 		
@@ -391,7 +409,7 @@ public class PassMan extends JFrame{
 
 	}
 
-	public byte[] load_key_byte() throws IOException{
+	public static byte[] load_key_byte() throws IOException{
 
 		//File file = new File("bytekey.dat");
 		//DataInputStream stream = new DataInputStream(new FileInputStream(file));
@@ -685,7 +703,131 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 
 	}
 
-    
+
+	private class exportData implements ActionListener{
+
+		public void actionPerformed(ActionEvent e){
+
+			ADV_IO exporter = new ADV_IO();
+
+			try {
+
+				int ans = JOptionPane.showConfirmDialog(null, "WARNING!! You are about to export all passwords into an UNENCRYPTED!!! Data file, are you sure you want to proceed?", "WARNING!", JOptionPane.YES_NO_CANCEL_OPTION);
+
+				if(ans == 0){
+
+					exporter.fileStart("========================Crypto Keep Data for user======================== " + System.getProperty("user.name"), System.getProperty("user.name")+"CRYPTOKEEP");
+					exporter.fileOpen(System.getProperty("user.name")+"CRYPTOKEEP", "Usernames\tPasswords\n=========================================================================\n\n");
+					for(int x = 0; x < usernames.size(); x++){
+
+						byte[] xy = Base64.getDecoder().decode(passwords.get(x));
+						//String dec = new String(xy);
+						
+						String dPass = new String(new crypto().decrypt(xy, GetProperKey(), "def.txt"));
+	
+						exporter.fileOpen(System.getProperty("user.name")+"CRYPTOKEEP", (x+1)+". "+ uname.get(x) + "\t" + dPass);
+	
+					}
+					exporter.fileOpen(System.getProperty("user.name")+"CRYPTOKEEP", "\n COMPLETED!");
+
+					JOptionPane.showMessageDialog(null, "Operation Completed! The file was saved in the program Data!", "Success!", JOptionPane.OK_OPTION);
+
+				}
+				else if (ans == 1 || ans ==2){
+
+					JOptionPane.showMessageDialog(null, "Operation Cancelled", "ALERT", JOptionPane.OK_OPTION);
+
+				}
+
+			
+			}
+			catch (IOException e1) {
+				e1.printStackTrace();
+			} catch (NoSuchAlgorithmException e1) {
+				
+				e1.printStackTrace();
+			} catch (Exception e1) {
+				
+				e1.printStackTrace();
+			}
+
+		}
+
+	}
+
+
+	////////////////////////////////////////////
+	//
+	//		## Terminal mode
+	//
+	////////////////////////////////////////////
+
+	public static void T_auth() throws FileNotFoundException, NoSuchAlgorithmException{
+
+		File file = new File("default.txt");
+		Scanner scan = new Scanner(file);
+		String pwd = scan.nextLine();
+
+		Scanner keyboard = new Scanner(System.in);
+
+		while(true){
+			System.out.print("Please enter masterkey to continue: \n\n\n");
+			String pass = keyboard.nextLine();
+			MessageDigest md = MessageDigest.getInstance("SHA-512");
+			byte[] passHash = md.digest(pass.getBytes());
+			String finalPass = new String(passHash);
+
+
+			if(finalPass.equals(pwd)){
+				break;
+			}
+			else{
+					System.out.println(
+						"Error! Bad key was used during authentication! Please try again! \n\n\n"
+					);
+			}
+		}
+		scan.close();
+
+
+	}
+
+	public static void show_user_info(String val) throws FileNotFoundException{
+
+		File file = new File("usernames.txt");
+		Scanner scan = new Scanner(file);
+		
+		for(int x = 0; x < usernames.size(); x++){
+			if(val.equals(usernames.get(x))){
+				String passwd = passwords.get(x);
+				System.out.println("\n\n");
+				System.out.println("The user name is: \n" + usernames.get(x)+ "\n" + "The encrypted password is: \n" + passwords.get(x));
+				System.out.println("\n Please try again with \"Decrypt\" [USERNAME] to try and decrypt the password");
+			}
+		}
+
+	}
+
+	public static void show_user_password(String val) throws IOException, Exception{
+
+		File file = new File("usernames.txt");
+		Scanner scan = new Scanner(file);
+		
+		for(int x = 0; x < usernames.size(); x++){
+			if(val.equals(usernames.get(x))){
+				String passwd = passwords.get(x);
+
+				byte[] decryted = crypto.decrypt(passwd.getBytes(), load_key_byte(), "fake");
+				String decoded = new String(Base64.getDecoder().decode(decryted));
+
+				System.out.println("\n\n");
+				System.out.println("The user name is: \n" + usernames.get(x)+ "\n" + "The decrypted password is: \n" + decoded);
+				
+			}
+		}
+
+	}
+
     ////////////////////////////////////////////
     //
     //		## MAIN MENTHOD::
@@ -695,8 +837,100 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
     
     
     public static void main(String []args) throws Exception{
+
+
+
+
+
+    ////////////////////////////////////////////
+	//
+	//		## Terminal mode
+	//
+	////////////////////////////////////////////
+
+
+	    	
+	String[] Operators={
+
+		"show",			// Showcase all the list of password and usernames.
+		"get",			// Returns comments and usernames of certain elements.
+		"encrypt",		// Adds new password.
+		"decrypt",		// Decrypts and lists full values.
+		"add",			// Adds to certain things.
+		"remove" 		// Removes a password from the field.
+
+	};
+/*
+	if(flag() == true || args[1].isEmpty() == false){
+		try {
+		load_txt_elements();
+		load_list();
+		
+		if(args[0].equals(Operators[0])){
+			T_auth();
+
+			if(args[1] == null){
+
+				System.out.println("ERROR, no username provided\n" +
+				
+				"USAGE:    PassMan [option] [USERNAME]\n" + 
+				"OPTIONS: \n" +Operators.toString());
+
+				System.exit(0);
+
+			}
+
+			String Username = args[1];
+			show_user_info(Username);
+
+			System.exit(0);
+
+		}
+		else if(args[0].equals(Operators[3])){
+
+			T_auth();
+
+			if(args[1] == null){
+
+				System.out.println("ERROR, no username provided\n" +
+				
+				"USAGE:    PassMan [option] [USERNAME]\n" + 
+				"OPTIONS: \n" +Operators.toString());
+
+				System.exit(0);
+
+			}
+
+			String user = args[1];
+			show_user_info(user);
+
+			System.exit(0);
+
+		}
+
+
+
+		} catch (FileNotFoundException e) {
+
+			JOptionPane.showMessageDialog(null, e.getMessage(), "FileNotFoundException", JOptionPane.ERROR_MESSAGE);
+	
+	}
+
+
+}
     	
-    	if(flag() == false) {
+
+	*/
+
+
+    ////////////////////////////////////////////
+	//
+	//		## Main GUI
+	//
+	////////////////////////////////////////////
+	
+	
+		if(flag() == false) {
     		try {
 				Setup();
 				new PassMan();
@@ -726,4 +960,3 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
     }
 	
 }
-
