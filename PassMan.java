@@ -9,6 +9,7 @@ import javax.sound.sampled.ReverbType;
 import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Desktop.*;
@@ -115,6 +116,7 @@ public class PassMan extends JFrame{
 
 		JMenu help = new JMenu("Help");
 		JMenuItem readme = new JMenuItem("Readme");
+		readme.addActionListener(new READMEE());
 
 		export.addActionListener(new exportData());
 
@@ -667,6 +669,26 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
     /////////////////////////
 	// For the Menu Bars::
 	/////////////////////////
+
+	private class READMEE implements ActionListener{
+
+		public void actionPerformed(ActionEvent e){
+
+			File file = new File("README.md");
+
+			Desktop top = java.awt.Desktop.getDesktop();
+
+			try {
+				top.open(file);
+			} catch (IOException e1) {
+	
+				e1.printStackTrace();
+
+			}
+
+		}
+
+	}
     
 
 	private class TASK_EXIT implements ActionListener{
