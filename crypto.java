@@ -17,9 +17,9 @@ import java.security.*;
 public class crypto {
 
 
-	private byte[] iv = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	private static byte[] iv = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     private byte[] specs;
-    private IvParameterSpec ivspec = new IvParameterSpec(iv);
+    private static IvParameterSpec ivspec = new IvParameterSpec(iv);
 
 	//Used to convert encoded String key from file into actual key.
     public SecretKeySpec returner(String key)throws NoSuchAlgorithmException{
@@ -106,7 +106,7 @@ public class crypto {
     }
     
     // decryption takes place here...
-    public byte[] decrypt(byte[] TEXT, byte[] key, String filename)throws Exception{
+    public static byte[] decrypt(byte[] TEXT, byte[] key, String filename)throws Exception{
         
         Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         SecretKeySpec spec = new SecretKeySpec(key, "AES");
