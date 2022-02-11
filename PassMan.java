@@ -20,26 +20,29 @@ import java.util.Base64;
 
 public class PassMan extends JFrame{
 
-	
+	//Menu.
 	private JMenuBar bar = new JMenuBar();
 	
 	private JList list;
-	
+	// Weird.. dont know what Idea i had for this....
 	private JTextArea area;
 	
+	// All the panels.
 	private JPanel panel1;
 	private JPanel panel2;
 	private JPanel panel3;
 	
+	// All the text fields
 	private JTextField textPass;
 	private JTextField textUser;
 	private JTextField reveal_pass;
 	private JTextField reveal_user;
 	
+	// All the scrollpanes.
 	private JScrollPane pane;
 	private JScrollPane scroll;
 	
-	
+	// All the buttons.
 	private JButton button;
 	private JButton add;
 	private JButton link;
@@ -58,13 +61,17 @@ public class PassMan extends JFrame{
 	private static ArrayList <String> usernames = new ArrayList<>();
 	private static ArrayList <String> passwords = new ArrayList<>();
 	private static ArrayList <String> uname = new ArrayList<>();
+
+	// List for the JList
 	private static DefaultListModel<String> model = new DefaultListModel<>();
-	private static DefaultListModel<String> favorites = new DefaultListModel<>();
-	private static DefaultListModel<String> group11 = new DefaultListModel<>();
-	private static DefaultListModel<String> group22 = new DefaultListModel<>();
-	private static DefaultListModel<String> linkS = new DefaultListModel<>();
+	
+	// Lists for the buttons panel.
+	private static ArrayList<String> favorites = new ArrayList<>();
+	private static ArrayList<String> group11 = new ArrayList<>();
+	private static ArrayList<String> group22 = new ArrayList<>();
+	private static ArrayList<String> linkS = new ArrayList<>();
 
-
+	// Not in current use.
 	private static String[] unames;
 
 
@@ -111,6 +118,7 @@ public class PassMan extends JFrame{
 		
 
 
+		JMenuItem settings = new JMenuItem("Settings");
 		JMenuItem exit = new JMenuItem("exit");
 		exit.addActionListener(new TASK_EXIT());
 
@@ -211,7 +219,6 @@ public class PassMan extends JFrame{
 		//JLabel label = new JLabel();
 		//label.setText("Username and Password");
 		
-		
     	list = new JList(model);
     	pane = new JScrollPane(list, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		list.setVisibleRowCount(6);
@@ -233,6 +240,31 @@ public class PassMan extends JFrame{
 		//panel3.add(label, BorderLayout.CENTER);
 		
 }
+
+	//////////////////////////////
+	//
+	//		Getters and Setters
+	//
+	//////////////////////////////
+
+
+	public String getUsername(){
+
+		return textUser.getText();
+
+	}
+
+	public void setUserList(String username){
+
+		uname.add(username);
+
+	}
+
+	public void setModelList(String username){
+
+		model.addElement(username);
+
+	}
 	
 	
     ///////////////////////////////////////////////////////////////////////
@@ -264,6 +296,14 @@ public class PassMan extends JFrame{
 		PrintWriter UsernameFile = new PrintWriter("usernames.txt");
 		PrintWriter decrypted_unames = new PrintWriter("uname_list.txt");
 		PrintWriter PasswordFile = new PrintWriter("passwords.txt");
+		
+		//For the Buttons
+		PrintWriter LinksList = new PrintWriter("links.txt");
+		PrintWriter FavoritesList= new PrintWriter("favorites.txt");
+		PrintWriter group1List = new PrintWriter("g1.txt");
+		PrintWriter group2List = new PrintWriter("g2.txt");
+		//END BUTTONS
+
 		String pass = JOptionPane.showInputDialog("Please create a  Master key to proceed");
 
 			MessageDigest md = MessageDigest.getInstance("SHA-512");
@@ -288,11 +328,15 @@ public class PassMan extends JFrame{
 
 			//This if for the key to be stored as RAW byte array!! No conversion!!
 			keyStore.filStartBinByte(bytekey, "bytekey.dat");
-		
+			
 		
 		UsernameFile.close();
 		PasswordFile.close();
 		decrypted_unames.close();
+		LinksList.close();
+		FavoritesList.close();
+		group1List.close();
+		group2List.close();
 		
 	}
 	
@@ -351,6 +395,17 @@ public class PassMan extends JFrame{
     		KeyMap.put(Inputer.nextLine(), passIn.nextLine());
     		
     	}
+
+		//
+		//
+		//
+		//
+		//		LOADING THE BUTTONS GOES HERE!!!!
+		//
+		//
+		//
+		//
+		//
     	
     	Inputer.close();
     	Input.close();
@@ -379,6 +434,16 @@ public class PassMan extends JFrame{
     		
     }
     
+
+	//////////////////////////////////////
+	//
+	//		FOR THE BUTTONS
+	//
+	//////////////////////////////////////
+
+
+
+
     
     ///////////////////////////////////////////////////////////////////////
     //
@@ -421,7 +486,7 @@ public class PassMan extends JFrame{
 
 	}
 
-	public byte [] GetProperKey() throws IOException, NoSuchAlgorithmException{
+	public static byte [] GetProperKey() throws IOException, NoSuchAlgorithmException{
 
 		byte[] HashToGet = Files.readAllBytes(Paths.get("default.dat"));
 		MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -531,6 +596,22 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
     		
     		try {
 
+				int ans= JOptionPane.showConfirmDialog(null, "Would you like to add this to a group?", "ALERT", JOptionPane.YES_NO_CANCEL_OPTION);
+
+				if(ans == 0 ){
+
+					//Created as a separate thread to fix bugs with closing the tab.
+					thread2 th = new thread2();
+					th.start();
+
+				}
+				else if(ans == 1){
+					JOptionPane.showMessageDialog(null, "Operation Cancelled", "ALERT", JOptionPane.INFORMATION_MESSAGE);
+				}
+				else if(ans == 2){
+					JOptionPane.showMessageDialog(null, "Operation Cancelled", "ALERT", JOptionPane.INFORMATION_MESSAGE);
+				}
+
 				crypto crypt = new crypto();
 
 				byte[] encryptedUser = crypt.encrypt(uname.getBytes(), GetProperKey(), "def.txt");
@@ -542,8 +623,8 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 				 io.fileOpen("uname_list.txt", uname);
 				 io.fileOpen("usernames.txt", getuBytes);
 				 io.fileOpen("passwords.txt", getpBytes);
-				 usernames.add(uname);
-				 passwords.add(pwd);
+				 usernames.add(getpBytes);
+				 passwords.add(getpBytes);
 				 model.addElement(uname);
 				
 				//KeyMap.put(uname, pwd);
@@ -591,7 +672,8 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 						byte[] xy = Base64.getDecoder().decode(passwords.get(x));
 						//String dec = new String(xy);
 						
-						String dPass = new String(new crypto().decrypt(xy, GetProperKey(), "def.txt"));
+						new crypto();
+						String dPass = new String(crypto.decrypt(xy, GetProperKey(), "def.txt"));
 						reveal_user.setText(selectedVauled);
 						reveal_pass.setText(dPass);
 					
@@ -664,8 +746,20 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 		}
 		
 	}
+
+	private class thread2 extends Thread{
+
+		@Override
+		public void run(){
+
+			new cryptoSettings();
+
+		}
+
+	}
 	
-    
+
+
     /////////////////////////
 	// For the Menu Bars::
 	/////////////////////////
@@ -738,7 +832,7 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 
 				if(ans == 0){
 
-					exporter.fileStart("========================Crypto Keep Data for user======================== " + System.getProperty("user.name"), System.getProperty("user.name")+"CRYPTOKEEP");
+					exporter.fileStart("========================Crypto Keep Data for user======================== \n" + System.getProperty("user.name"), System.getProperty("user.name")+"CRYPTOKEEP");
 					exporter.fileOpen(System.getProperty("user.name")+"CRYPTOKEEP", "Usernames\tPasswords\n=========================================================================\n\n");
 					for(int x = 0; x < usernames.size(); x++){
 
@@ -839,7 +933,7 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 			if(val.equals(usernames.get(x))){
 				String passwd = passwords.get(x);
 
-				byte[] decryted = crypto.decrypt(passwd.getBytes(), load_key_byte(), "fake");
+				byte[] decryted = crypto.decrypt(passwd.getBytes(), GetProperKey(), "fake");
 				String decoded = new String(Base64.getDecoder().decode(decryted));
 
 				System.out.println("\n\n");
