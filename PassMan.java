@@ -51,6 +51,7 @@ public class PassMan extends JFrame{
 	private JButton reveal;
 	private JButton clear;
 	private JButton random;
+	private JButton AllUsers;
 	
 	private JFileChooser filer;
 	private static String filename = "default.dat";
@@ -151,12 +152,22 @@ public class PassMan extends JFrame{
 
 
 		panel1 = new JPanel();
-		panel1.setLayout(new GridLayout(0,4));
+		panel1.setLayout(new GridLayout(0,5));
 		button = new JButton("favorites");
-		link = new JButton("Link");
-		group = new JButton("Group 1");
-		group2 = new JButton("Group 2");
+		button.addActionListener(new showFavorites());
 		
+		link = new JButton("Link");
+		
+		group = new JButton("Group 1");
+		group.addActionListener(new showGrp1());
+		
+		group2 = new JButton("Group 2");
+		group2.addActionListener(new showGrp2());
+		
+		AllUsers = new JButton("All");
+		AllUsers.addActionListener(new showAll());
+		
+		panel1.add(AllUsers);
 		panel1.add(button);
 		panel1.add(link);
 		panel1.add(group);
@@ -752,13 +763,143 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 		@Override
 		public void run(){
 
-			new cryptoSettings();
+			new cryptoSettings(textUser.getText());
+			
 
 		}
 
 	}
 	
+	
+	
+	////////////////////////
+	//	For the buttons.
+	////////////////////////
 
+	private class showFavorites implements ActionListener{
+		
+		public void actionPerformed(ActionEvent e) {
+			
+			model.clear();
+			favorites.clear();
+			File file = new File("favorites.txt");
+			try {
+				//model.clear();
+				Scanner scan = new Scanner(file);
+				while(scan.hasNextLine()) {
+					favorites.add(scan.nextLine());
+				}
+				
+				model.clear();
+				for(String s: favorites) {
+					model.addElement(s);
+				
+				}
+					scan.close();
+					
+			}
+			
+			
+			catch (FileNotFoundException e1) {
+			
+				e1.printStackTrace();
+			
+			}
+			
+		}
+		
+	}
+	
+	private class showLinks implements ActionListener{
+		
+		public void actionPerformed(ActionEvent e) {
+			
+		}
+		
+	}
+	
+	private class showGrp1 implements ActionListener{
+		
+		public void actionPerformed(ActionEvent e) {
+			
+			model.clear();
+			group11.clear();
+			File file = new File("g1.txt");
+			try {
+				
+				Scanner scan = new Scanner(file);
+				while(scan.hasNextLine()) {
+					group11.add(scan.nextLine());
+				}
+				
+			
+				for(String s: group11) {
+					model.addElement(s);
+				
+				}
+					scan.close();
+				
+			}
+			
+			
+			catch (FileNotFoundException e1) {
+			
+				e1.printStackTrace();
+			
+			}
+			
+		}
+		
+	}
+	
+	private class showGrp2 implements ActionListener{
+		
+		public void actionPerformed(ActionEvent e) {
+			
+			model.clear();
+			group22.clear();
+			File file = new File("g2.txt");
+			try {
+				
+				Scanner scan = new Scanner(file);
+				while(scan.hasNextLine()) {
+					group22.add(scan.nextLine());
+				}
+				
+				model.clear();
+				for(String s: group22) {
+					model.addElement(s);
+				
+				}
+					scan.close();
+				
+			}
+			
+			
+			catch (FileNotFoundException e1) {
+			
+				e1.printStackTrace();
+			
+			}
+			
+		}
+		
+	}
+	
+	private class showAll implements ActionListener{
+		
+		public void actionPerformed(ActionEvent e) {
+			
+			model.clear();
+			for(String s : uname) {
+				
+				model.addElement(s);
+				
+			}
+			
+		}
+		
+	}
 
     /////////////////////////
 	// For the Menu Bars::
