@@ -19,12 +19,18 @@ public class cryptoSettings extends JFrame{
     private JButton lnk;
     private JButton grp1;
     private JButton grp2;
+    
+    // Username for setting method
+    
+    private String data;
 
-    public cryptoSettings(){
+    public cryptoSettings(String data){
 
+    	
+    	this.data = data;
         this.setTitle("Wizard");
         this.setSize(400,300);
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setLayout(new BorderLayout());
 		
         setPanel1();
@@ -38,6 +44,16 @@ public class cryptoSettings extends JFrame{
 
     }
 
+    // SETTER FOR USERNAME!!
+    
+    public void setUsername(String data) {
+    	this.data = data;
+    }
+    
+    public String getUsername() {
+    	return data;
+    }
+    
     public void setPanel1(){
 
         panel1 = new JPanel();
@@ -81,7 +97,7 @@ public class cryptoSettings extends JFrame{
 			try {
 				new ADV_IO().fileOpen("links.txt", linkSTR);
 				JOptionPane.showMessageDialog(null, "link added successfully", "ALERT", JOptionPane.INFORMATION_MESSAGE);
-                System.exit(0);
+            
 
 			} catch (IOException e1) {
 				e1.printStackTrace();
@@ -98,11 +114,11 @@ public class cryptoSettings extends JFrame{
 
             try{
 
-                new ADV_IO().fileOpen("favorites.txt", new PassMan().getUsername());
+                new ADV_IO().fileOpen("favorites.txt", data);
                 //new PassMan().setUserList(new PassMan().getUsername());
                 //new PassMan().setModelList(new PassMan().getUsername());
                 JOptionPane.showMessageDialog(null, "Favorite added successfully", "ALERT", JOptionPane.INFORMATION_MESSAGE);
-                System.exit(0);
+       
             }
             catch(FileNotFoundException e1){
 
@@ -124,11 +140,11 @@ public class cryptoSettings extends JFrame{
 
             try{
 
-                new ADV_IO().fileOpen("g1.txt", new PassMan().getUsername());
+                new ADV_IO().fileOpen("g1.txt", data);
                 //new PassMan().setUserList(new PassMan().getUsername());
                 //new PassMan().setModelList(new PassMan().getUsername());
                 JOptionPane.showMessageDialog(null, "Favorite added successfully", "ALERT", JOptionPane.INFORMATION_MESSAGE);
-                System.exit(0);
+        
             }
             catch(FileNotFoundException e1){
 
@@ -149,11 +165,11 @@ public class cryptoSettings extends JFrame{
 
             try{
 
-                new ADV_IO().fileOpen("g2.txt", new PassMan().getUsername());
+                new ADV_IO().fileOpen("g2.txt", data);
                 //new PassMan().setUserList(new PassMan().getUsername());
                 //new PassMan().setModelList(new PassMan().getUsername());
                 JOptionPane.showMessageDialog(null, "Favorite added successfully", "ALERT", JOptionPane.INFORMATION_MESSAGE);
-                System.exit(0);
+       
             }
             catch(FileNotFoundException e1){
 
