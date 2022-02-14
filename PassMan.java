@@ -157,6 +157,7 @@ public class PassMan extends JFrame{
 		button.addActionListener(new showFavorites());
 		
 		link = new JButton("Link");
+		link.addActionListener(new showLinks());
 		
 		group = new JButton("Group 1");
 		group.addActionListener(new showGrp1());
@@ -813,6 +814,12 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 	private class showLinks implements ActionListener{
 		
 		public void actionPerformed(ActionEvent e) {
+			
+			try {
+				new links();
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
 			
 		}
 		
