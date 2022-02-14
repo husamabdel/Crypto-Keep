@@ -95,7 +95,7 @@ public class cryptoSettings extends JFrame{
 
 			String linkSTR = JOptionPane.showInputDialog(null, "Please Enter the Link you would like to store:", "www.example.com");
 			try {
-				new ADV_IO().fileOpen("links.txt", linkSTR);
+				new ADV_IO().fileOpen("links.txt", linkSTR + "\n" + data);
 				JOptionPane.showMessageDialog(null, "link added successfully", "ALERT", JOptionPane.INFORMATION_MESSAGE);
             
 
