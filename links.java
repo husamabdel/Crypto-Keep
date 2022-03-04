@@ -1,7 +1,7 @@
 import java.util.Scanner;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.desktop.*;
+import java.awt.Desktop.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -45,6 +45,7 @@ public class links extends JFrame{
 		pane = new JScrollPane(list, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
 		
 		label = new JLabel("Select an option and click launch when ready");
+		label.setLocation(0, 0);
 		
 		button = new JButton("Launch");
 		button.addActionListener(new buttonListener());
