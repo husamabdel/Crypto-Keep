@@ -116,7 +116,8 @@ public class PassMan extends JFrame{
 		JMenuItem item = new JMenuItem("Encrypt a file");
 		item.addActionListener(new FILE_ENCRYPT());
 		
-		
+		JMenuItem advanced = new JMenuItem("Advanced Add");
+		advanced.addActionListener(new SUBMIT());
 
 
 		JMenuItem settings = new JMenuItem("Settings");
@@ -136,6 +137,7 @@ public class PassMan extends JFrame{
 		FileM.add(filecontrol);
 		FileM.addSeparator();
 		FileM.add(item);
+		FileM.add(advanced);
 		FileM.add(exit);
 		
 		help.add(readme);
@@ -275,6 +277,14 @@ public class PassMan extends JFrame{
 	public void setModelList(String username){
 
 		model.addElement(username);
+
+	}
+
+	public void setStucts(String username, String password, String alias){
+
+		usernames.add(username);
+		passwords.add(password);
+		model.addElement(alias);
 
 	}
 	
@@ -599,7 +609,7 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
  
     
     // Action listener for add button (Panel 2)
-    private class ADD_AND_ENCRYPT implements ActionListener{
+    protected class ADD_AND_ENCRYPT implements ActionListener{
     	
     	public void actionPerformed(ActionEvent e) {
     		
@@ -682,11 +692,13 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 					try {
 						
 						byte[] xy = Base64.getDecoder().decode(passwords.get(x));
+						byte[] yx = Base64.getDecoder().decode(usernames.get(x));
 						//String dec = new String(xy);
 						
 						new crypto();
 						String dPass = new String(crypto.decrypt(xy, GetProperKey(), "def.txt"));
-						reveal_user.setText(selectedVauled);
+						String dUser = new String(crypto.decrypt(yx, GetProperKey(), "def.txt"));
+						reveal_user.setText(dUser);
 						reveal_pass.setText(dPass);
 					
 					} 
@@ -703,7 +715,42 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
     	}
     	
     }
-  
+
+	// ActionListener for the menu to add with alias
+
+
+	//
+	//
+	//
+	//
+	//
+
+
+
+
+	protected class SUBMIT implements ActionListener{
+	
+		public void actionPerformed(ActionEvent e){
+	
+			advancedAdd adder = new advancedAdd();
+			setStucts(adder.getUsername(), adder.getPassword(), adder.getAlias());
+			
+		}
+	
+	}
+	
+
+
+
+
+
+  //
+  //
+  //
+  //
+  //
+  //
+
 
 	// Action Listener for the clear button:
 
