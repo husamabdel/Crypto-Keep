@@ -1,4 +1,4 @@
-﻿###########################################
+###########################################
 #
 #
 #          CRYPTOKEEP INSTALLER (WIN)
@@ -18,8 +18,8 @@
 # bin and src.
 
 $user =$env:UserName
-$BIN = 'C:\Program Files\Crypto-Keep\bin\'
-$SRC = 'C:\Program Files\Crypto-Keep\src\'
+$BIN = 'C:\Packages\Crypto-Keep\bin\'
+$SRC = 'C:\Packages\Crypto-Keep\src\'
 $DESKTOP = "C:\Users\$env:USERNAME\Desktop\"
 
 # Check if Java is installed.
