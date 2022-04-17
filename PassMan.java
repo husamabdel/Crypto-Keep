@@ -52,6 +52,7 @@ public class PassMan extends JFrame{
 	private JButton clear;
 	private JButton random;
 	private JButton AllUsers;
+	private JButton removeSelected;
 	
 	private JFileChooser filer;
 	private static String filename = "default.dat";
@@ -193,9 +194,13 @@ public class PassMan extends JFrame{
 		random = new JButton("Generate password");
 		random.addActionListener(new RANDOM_PASS());
 		
+		removeSelected = new JButton("Delete");
+		removeSelected.addActionListener(new REMOVE());
+		
 		panel2.add(clear);
 		panel2.add(reveal);
 		panel2.add(random);
+		panel2.add(removeSelected);
 
 	}
 	
@@ -543,8 +548,71 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 	}
 
 
+	/////////////////////////
+	//
+	//	Delete a selected entry:
+	//
+	/////////////////////////
 
 
+	public static void deleteEntry(String entry) throws FileNotFoundException {
+		
+		int index;
+		LinkedList <String> list = new LinkedList<>();
+		
+		for(int i = 0; i < uname.size(); i++) {
+			list.add(uname.get(i));
+		}
+		
+		for(int i = 0; i < list.size(); i++) {
+			
+			if(list.get(i) == entry) {
+				
+				index = i;
+				
+				uname.remove(index);
+				usernames.remove(index);
+				passwords.remove(index);
+				break;
+				
+			}
+			
+		}
+		
+
+		
+		File f = new File("uname_list.txt");
+		File f2 = new File("usernames.txt");
+		File f3 = new File("passwords.txt");
+		
+		PrintWriter out = new PrintWriter(f);
+		PrintWriter out2 = new PrintWriter(f2);
+		PrintWriter out3 = new PrintWriter(f3);
+		
+		for(int i = 0; i < list.size(); i++) {
+			
+			out.println(uname.get(i));
+			out2.println(usernames.get(i));
+			out3.println(passwords.get(i));
+			
+		}
+		out.close();
+		out2.close();
+		out3.close();
+		
+		
+
+		
+	}
+
+	/////////////////////////
+	//
+	//
+	//	When the button is clicked, call the function above to delete an enrty.
+	//
+	//
+	////////////////////////
+	
 
     
     /*
@@ -766,6 +834,35 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 
 
 	}
+	
+	
+	
+	// Action listener for the delete button.
+	
+	private class REMOVE implements ActionListener{
+		
+		public void actionPerformed(ActionEvent e) {
+			
+			String element = (String) list.getSelectedValue();
+			int index = list.getSelectedIndex();
+			
+			
+			try {
+				deleteEntry(element);
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+			
+			list.remove(index);
+			
+		}
+		
+	}
+	
+	
+	
+	
+	
 
   // Action Listener to generate a random password.
     
