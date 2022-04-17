@@ -558,15 +558,17 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 	public static void deleteEntry(String entry) throws FileNotFoundException {
 		
 		int index;
-		LinkedList <String> list = new LinkedList<>();
+		LinkedList <String> lyst = new LinkedList<>();
 		
 		for(int i = 0; i < uname.size(); i++) {
-			list.add(uname.get(i));
+			lyst.add(uname.get(i));
 		}
+
+		System.out.println(lyst.toString());
 		
-		for(int i = 0; i < list.size(); i++) {
+		for(int i = 0; i < lyst.size(); i++) {
 			
-			if(list.get(i) == entry) {
+			if(lyst.get(i).equals(entry)) {
 				
 				index = i;
 				
@@ -581,15 +583,11 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 		
 
 		
-		File f = new File("uname_list.txt");
-		File f2 = new File("usernames.txt");
-		File f3 = new File("passwords.txt");
+		PrintWriter out = new PrintWriter("uname_list.txt");
+		PrintWriter out2 = new PrintWriter("usernames.txt");
+		PrintWriter out3 = new PrintWriter("passwords.txt");
 		
-		PrintWriter out = new PrintWriter(f);
-		PrintWriter out2 = new PrintWriter(f2);
-		PrintWriter out3 = new PrintWriter(f3);
-		
-		for(int i = 0; i < list.size(); i++) {
+		for(int i = 0; i < lyst.size(); i++) {
 			
 			out.println(uname.get(i));
 			out2.println(usernames.get(i));
@@ -853,7 +851,7 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 				e1.printStackTrace();
 			}
 			
-			list.remove(index);
+			//list.remove(index);
 			
 		}
 		
