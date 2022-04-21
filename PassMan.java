@@ -587,7 +587,7 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 		PrintWriter out2 = new PrintWriter("usernames.txt");
 		PrintWriter out3 = new PrintWriter("passwords.txt");
 		
-		for(int i = 0; i < lyst.size(); i++) {
+		for(int i = 0; i < lyst.size()-1; i++) {
 			
 			out.println(uname.get(i));
 			out2.println(usernames.get(i));
@@ -842,7 +842,7 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 		public void actionPerformed(ActionEvent e) {
 			
 			String element = (String) list.getSelectedValue();
-			int index = list.getSelectedIndex();
+			//int index = list.getSelectedIndex();
 			
 			
 			try {
