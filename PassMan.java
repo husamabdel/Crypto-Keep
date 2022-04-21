@@ -11,6 +11,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Desktop.*;
 import java.awt.event.*;
@@ -92,7 +93,7 @@ public class PassMan extends JFrame{
 		this.add(panel2, BorderLayout.SOUTH);
 		this.add(panel3, BorderLayout.CENTER);
 		//this.pack();
-		this.setResizable(false);
+		//this.setResizable(false);
 		this.setVisible(true);
 		
 	}
@@ -213,9 +214,13 @@ public class PassMan extends JFrame{
 		panel3.setLayout(new FlowLayout());
 		panel3.setBackground(Color.WHITE);
 		
-		JLabel label = new JLabel();
+		JLabel label = new JLabel("Crypto-Keep Password Manager!");
+		label.setFont(new Font("MV Boli", Font.ROMAN_BASELINE, 25));
 		ImageIcon icon = new ImageIcon("passman.png");
 		label.setIcon(icon);
+		label.setBorder(null);
+		label.setHorizontalAlignment(JLabel.CENTER);
+		label.setVerticalTextPosition(JLabel.TOP);
 
 		textUser = new JTextField(12);
 		textUser.setText("username here");
@@ -841,17 +846,29 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 		
 		public void actionPerformed(ActionEvent e) {
 			
+
 			String element = (String) list.getSelectedValue();
-			//int index = list.getSelectedIndex();
+			int ans = JOptionPane.showConfirmDialog(null, "WARNING!! You are about to delete the saved data for this selection! are you sure?", "Alert!", JOptionPane.YES_NO_OPTION);
 			
 			
-			try {
-				deleteEntry(element);
-			} catch (FileNotFoundException e1) {
-				e1.printStackTrace();
+			if(ans == JOptionPane.YES_OPTION){
+
+				
+				try {
+					deleteEntry(element);
+				} 
+				
+				catch (FileNotFoundException e1) {
+					e1.printStackTrace();
+				}
+				
+				list.remove(list.getSelectedIndex());
+
 			}
-			
-			//list.remove(index);
+
+			else{
+				JOptionPane.showMessageDialog(null, "Operation Cancelled!");
+			}
 			
 		}
 		
