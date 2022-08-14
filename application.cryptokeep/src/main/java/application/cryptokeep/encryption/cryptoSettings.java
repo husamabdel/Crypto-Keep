@@ -12,6 +12,8 @@ import java.awt.Desktop.*;
 
 public class cryptoSettings extends JFrame{
 
+    protected volatile passObject pobj;
+
     private JPanel panel1;
     private JPanel panel2;
     //private JPanel panel3;
@@ -28,7 +30,7 @@ public class cryptoSettings extends JFrame{
     
     private String data;
 
-    public cryptoSettings(String data){
+    public cryptoSettings(String data) throws ClassNotFoundException, IOException{
 
     	
     	this.data = data;
@@ -37,6 +39,7 @@ public class cryptoSettings extends JFrame{
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setLayout(new BorderLayout());
 		
+        CreateObject();
         setPanel1();
         setPanel2();
 
@@ -89,6 +92,14 @@ public class cryptoSettings extends JFrame{
 
     }
 
+    public void CreateObject() throws IOException, ClassNotFoundException{
+
+        FileInputStream fstream = new FileInputStream(new File("pobj.ser"));
+        ObjectInputStream ostream = new ObjectInputStream(fstream);
+        pobj = (passObject)ostream.readObject();
+
+    }
+
 
 
     // ActionListeners::
@@ -100,6 +111,8 @@ public class cryptoSettings extends JFrame{
 			String linkSTR = JOptionPane.showInputDialog(null, "Please Enter the Link you would like to store:", "www.example.com");
 			try {
 				new ADV_IO().fileOpen("links.txt", linkSTR + "\n" + data);
+                pobj.getLinkS().add(linkSTR);
+                new ADV_IO().storeObject(pobj, new File("pobj.ser"));
 				
 				
 				
@@ -124,6 +137,10 @@ public class cryptoSettings extends JFrame{
                 new ADV_IO().fileOpen("favorites.txt", data);
                 //new PassMan().setUserList(new PassMan().getUsername());
                 //new PassMan().setModelList(new PassMan().getUsername());
+
+                pobj.getFavorites().add(data);
+                new ADV_IO().storeObject(pobj, new File("pobj.ser"));
+
                 JOptionPane.showMessageDialog(null, "Favorite added successfully", "ALERT", JOptionPane.INFORMATION_MESSAGE);
        
             }
@@ -148,6 +165,11 @@ public class cryptoSettings extends JFrame{
             try{
 
                 new ADV_IO().fileOpen("g1.txt", data);
+
+                pobj.getGroup11().add(data);
+                new ADV_IO().storeObject(pobj, new File("pobj.ser"));
+
+
                 //new PassMan().setUserList(new PassMan().getUsername());
                 //new PassMan().setModelList(new PassMan().getUsername());
                 JOptionPane.showMessageDialog(null, "Favorite added successfully", "ALERT", JOptionPane.INFORMATION_MESSAGE);
@@ -173,6 +195,10 @@ public class cryptoSettings extends JFrame{
             try{
 
                 new ADV_IO().fileOpen("g2.txt", data);
+
+                pobj.getGroup22().add(data);
+                new ADV_IO().storeObject(pobj, new File("pobj.ser"));
+
                 //new PassMan().setUserList(new PassMan().getUsername());
                 //new PassMan().setModelList(new PassMan().getUsername());
                 JOptionPane.showMessageDialog(null, "Favorite added successfully", "ALERT", JOptionPane.INFORMATION_MESSAGE);

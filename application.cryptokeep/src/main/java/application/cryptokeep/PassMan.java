@@ -53,7 +53,8 @@ public class PassMan extends JFrame{
 	
 	// All the scrollpanes.
 	private JScrollPane pane;
-	private JScrollPane scroll;
+	private JScrollPane 
+	scroll;
 	
 	// All the buttons.
 	private JButton button;
@@ -885,8 +886,18 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 	
 		public void actionPerformed(ActionEvent e){
 	
-			advancedAdd adder = new advancedAdd();
-			setStucts(adder.getUsername(), adder.getPassword(), adder.getAlias());
+			advancedAdd adder;
+			try {
+				adder = new advancedAdd();
+				setStucts(adder.getUsername(), adder.getPassword(), adder.getAlias());
+			} catch (ClassNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
 			
 		}
 	
@@ -1008,7 +1019,15 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 		@Override
 		public void run(){
 
-			new cryptoSettings(textUser.getText());
+			try {
+				new cryptoSettings(textUser.getText());
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 
 		}

@@ -11,6 +11,7 @@ import javax.swing.*;
 
 import application.cryptokeep.encryption.crypto;
 import application.cryptokeep.encryption.cryptoSettings;
+import application.cryptokeep.encryption.passObject;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -24,6 +25,10 @@ import java.security.*;
 import java.util.Base64;
 
 public class advancedAdd  extends JFrame{
+
+    //Pass Object to serialize after data is inputted:
+
+    protected volatile passObject pobj;
     
     private JPanel panel;
     private JLabel label;
@@ -35,18 +40,27 @@ public class advancedAdd  extends JFrame{
     private JTextField pass;
     private JButton submit;
     
-    public advancedAdd(){
+    public advancedAdd() throws ClassNotFoundException, IOException{
 
         this.setTitle("Advanced Add Options");
         this.setSize(225,250);
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         //this.pack();
         //this.setResizable(false);
-        
+        CreateObject();
         setPanel();
         this.add(panel);
         
         this.setVisible(true);
+
+    }
+
+
+    public void CreateObject() throws IOException, ClassNotFoundException{
+
+        FileInputStream fstream = new FileInputStream(new File("pobj.ser"));
+        ObjectInputStream ostream = new ObjectInputStream(fstream);
+        pobj = (passObject)ostream.readObject();
 
     }
 
@@ -113,7 +127,15 @@ public class advancedAdd  extends JFrame{
 		@Override
 		public void run(){
 
-			new cryptoSettings(alias.getText());
+			try {
+                new cryptoSettings(alias.getText());
+            } catch (ClassNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
 			
 
 		}
@@ -183,6 +205,10 @@ private class SUBMIT implements ActionListener{
 				 io.fileOpen("uname_list.txt", ALIAS);
 				 io.fileOpen("usernames.txt", getuBytes);
 				 io.fileOpen("passwords.txt", getpBytes);
+                 pobj.getUname().add(ALIAS);
+                 pobj.getUsernames().add(getuBytes);
+                 pobj.getPasswords().add(getpBytes);
+                 new ADV_IO().storeObject(pobj, new File("pobj.ser"));
 				
 				//KeyMap.put(uname, pwd);
 				

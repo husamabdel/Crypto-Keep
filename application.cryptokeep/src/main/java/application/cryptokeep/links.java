@@ -1,17 +1,24 @@
 package application.cryptokeep;
 import java.util.Scanner;
 import javax.swing.*;
+
+import application.cryptokeep.encryption.passObject;
+
 import java.awt.*;
 import java.awt.Desktop.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.*;
 public class links extends JFrame{
+
+	protected passObject pobj;
 
 	private JList list;
 	private JScrollPane pane;
@@ -35,6 +42,20 @@ public class links extends JFrame{
 		this.setVisible(true);
 		
 	}
+
+
+
+	
+    public void CreateObject() throws IOException, ClassNotFoundException{
+
+        FileInputStream fstream = new FileInputStream(new File("pobj.ser"));
+        ObjectInputStream ostream = new ObjectInputStream(fstream);
+        pobj = (passObject)ostream.readObject();
+
+    }
+	
+
+
 	
 	public void setPanel() {
 		
