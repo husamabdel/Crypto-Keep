@@ -97,6 +97,7 @@ public class cryptoSettings extends JFrame{
         FileInputStream fstream = new FileInputStream(new File("pobj.ser"));
         ObjectInputStream ostream = new ObjectInputStream(fstream);
         pobj = (passObject)ostream.readObject();
+        pobj.getUname().add(this.data);
 
     }
 
@@ -112,6 +113,7 @@ public class cryptoSettings extends JFrame{
 			try {
 				new ADV_IO().fileOpen("links.txt", linkSTR + "\n" + data);
                 pobj.getLinkS().add(linkSTR);
+                pobj.getLinkS().add(data);
                 new ADV_IO().storeObject(pobj, new File("pobj.ser"));
 				
 				

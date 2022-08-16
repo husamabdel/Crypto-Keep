@@ -28,8 +28,9 @@ public class links extends JFrame{
 	private DefaultListModel <String> model = new DefaultListModel<String>();
 	private DefaultListModel <String> users = new DefaultListModel<String>();
 
-	public links() throws FileNotFoundException {
+	public links() throws ClassNotFoundException, IOException {
 		
+		CreateObject();
 		addToModel();
 		setPanel();
 		
@@ -53,7 +54,7 @@ public class links extends JFrame{
         pobj = (passObject)ostream.readObject();
 
     }
-	
+
 
 
 	
@@ -85,9 +86,12 @@ public class links extends JFrame{
 		File file = new File("links.txt");
 		Scanner scan = new Scanner(file);
 		
-		while(scan.hasNextLine()) {
+		ArrayList <String> linkList = pobj.getLinkS();
+
+		for(String link : linkList) {
 			
-		model.addElement(scan.nextLine());	
+		model.addElement(link);	
+
 			
 		}
 		

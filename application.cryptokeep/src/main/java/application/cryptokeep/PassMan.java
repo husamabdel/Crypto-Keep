@@ -92,13 +92,13 @@ public class PassMan extends JFrame{
 	private static long pin;
 	
 	// The password Object
-	private static passObject pObject;
+	private static volatile passObject pObject;
 
 	// Not in current use.
 	private static String[] unames;
 
 
-	public PassMan() {
+	public PassMan() throws ClassNotFoundException, IOException {
 		
 		this.setTitle("Pass Man");
 		this.setSize(450,520);
@@ -115,7 +115,7 @@ public class PassMan extends JFrame{
 		ImageIcon appIcon = new ImageIcon(getClass().getResource("/passman.png"));
 		this.setIconImage(appIcon.getImage());
 		//this.pack();
-		//this.setResizable(false);
+		this.setResizable(false);
 		this.setVisible(true);
 		
 	}
@@ -352,6 +352,19 @@ public class PassMan extends JFrame{
 			else{return false;}
 			
 	}
+
+
+
+	public static void CreateObject() throws IOException, ClassNotFoundException{
+
+        FileInputStream fstream = new FileInputStream(new File("pobj.ser"));
+        ObjectInputStream ostream = new ObjectInputStream(fstream);
+        pObject = (passObject)ostream.readObject();
+
+    }
+
+
+
 	//start a new file if data is not set , this is called IF first function is false
 	
 		public static void Setup() throws Exception {
@@ -443,11 +456,8 @@ public class PassMan extends JFrame{
     	
     	//Load the object.
     	
-    	FileInputStream fstream = new FileInputStream(new File("pobj.ser"));
-    	ObjectInputStream ostream = new ObjectInputStream(fstream);
-    	
-    	pObject = (passObject)ostream.readObject();
-    	
+
+
     	//Load username file..
     	/*
     	File read = new File("usernames.txt");
@@ -495,6 +505,10 @@ public class PassMan extends JFrame{
     		//KeyMap.put(Inputer.nextLine(), passIn.nextLine());
     		
     	//}
+		linkS.addAll(pObject.getLinkS());
+		group11.addAll(pObject.getGroup11());
+		group22.addAll(pObject.getGroup22());
+		favorites.addAll(pObject.getFavorites());
 
 		//
 		//
@@ -525,10 +539,10 @@ public class PassMan extends JFrame{
     
     public static void load_list(){
     	
-    	unames = new String[uname.size()*2];
-    	for(int x = 0; x < uname.size(); x++) {
+    	//unames = new String[uname.size()*2];
+    	for(String name: uname) {
     		
-    		model.addElement(uname.get(x));
+    		model.addElement(name);
 
     	}
     		
@@ -769,13 +783,18 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 					//Created as a separate thread to fix bugs with closing the tab.
 					thread2 th = new thread2();
 					th.start();
+					
+					
+
 
 				}
 				else if(ans == 1){
 					JOptionPane.showMessageDialog(null, "Operation Cancelled", "ALERT", JOptionPane.INFORMATION_MESSAGE);
+					//return;
 				}
 				else if(ans == 2){
 					JOptionPane.showMessageDialog(null, "Operation Cancelled", "ALERT", JOptionPane.INFORMATION_MESSAGE);
+					//return;
 				}
 
 				crypto crypt = new crypto();
@@ -785,7 +804,7 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 				
 				String getuBytes = Base64.getEncoder().encodeToString(encryptedUser);
 				String getpBytes = Base64.getEncoder().encodeToString(encryptedPass);
-				 ADV_IO io = new ADV_IO();
+				ADV_IO io = new ADV_IO();
 				 
 				 
 				 io.fileOpen("uname_list.txt", uname1);
@@ -797,9 +816,9 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 				 uname.add(uname1);
 				 
 				 
-				 pObject.setUsernames(usernames);
-				 pObject.setPasswords(passwords);
-				 pObject.setUname(uname);
+				 pObject.getUsernames().add(getuBytes);
+				 pObject.getPasswords().add(getpBytes);
+				 pObject.getUname().add(uname1);
 				 
 				 io.storeObject(pObject, new File("pobj.ser"));
 				 
@@ -837,6 +856,8 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 				e1.printStackTrace();
 			}
     		String selectedVauled = (String) list.getSelectedValue();
+			System.out.println(selectedVauled);
+			System.out.println(uname.size());
     		
     		for(int x = 0; x < uname.size(); x++) {
     			
@@ -845,8 +866,8 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
     				
 					try {
 						
-						byte[] xy = Base64.getDecoder().decode(passwords.get(x));
-						byte[] yx = Base64.getDecoder().decode(usernames.get(x));
+						byte[] xy = Base64.getDecoder().decode(pObject.getPasswords().get(x));
+						byte[] yx = Base64.getDecoder().decode(pObject.getUsernames().get(x));
 						//String dec = new String(xy);
 						
 						new crypto();
@@ -860,7 +881,7 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 						e1.printStackTrace();
 					}
 
-				}
+				} System.out.println("Did not find value in list");
     			
     			
     			
@@ -1021,6 +1042,9 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 
 			try {
 				new cryptoSettings(textUser.getText());
+				
+
+
 			} catch (ClassNotFoundException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -1045,30 +1069,11 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 		public void actionPerformed(ActionEvent e) {
 			
 			model.clear();
-			favorites.clear();
-			File file = new File("favorites.txt");
-			try {
-				//model.clear();
-				Scanner scan = new Scanner(file);
-				while(scan.hasNextLine()) {
-					favorites.add(scan.nextLine());
-				}
-				
-				model.clear();
-				for(String s: favorites) {
-					model.addElement(s);
-				
-				}
-					scan.close();
-					
-			}
-			
-			
-			catch (FileNotFoundException e1) {
-			
-				e1.printStackTrace();
+			for(String s: favorites) {
+				model.addElement(s);
 			
 			}
+
 			
 		}
 		
@@ -1081,6 +1086,12 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
 			try {
 				new links();
 			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			} catch (ClassNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
 			
@@ -1609,6 +1620,7 @@ public static void auth() throws FileNotFoundException, NoSuchAlgorithmException
     		
 		else if(flag() == true){
 				try {
+				CreateObject();
 				load_txt_elements();
 				load_list();
 				auth();
